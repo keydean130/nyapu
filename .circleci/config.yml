@@ -52,25 +52,25 @@ jobs:
           fingerprints:
             - "46:b9:27:d7:d7:e0:2c:33:35:dc:ce:6e:19:b6:0a:ce"
       - run: 
-        name: ssh deploy 
-        command: |
-          ssh ${USER_NAME}@${HOST_NAME} '
-            rm -rf ~/app
-            mkdir ~/app
-            cd ~/app
-            git pull
-            cd ~/app/nyapu
-            pip install --upgrade pip
-            pipenv install
-            pipenv shell
-            python ~/app/nyapu/nyapu/manage.py migrate
-            python ~/app/nyapu/nyapu/manage.py collectstatic --noinput
-            sudo systemctl reload nginx.service
-            cd ~/app/nyapu/nyapu
-            pkill gunicorn
-            gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D
-            ps -aux | grep gunicorn
-          '
+          name: ssh deploy 
+          command: |
+            ssh ${USER_NAME}@${HOST_NAME} '
+              rm -rf ~/app
+              mkdir ~/app
+              cd ~/app
+              git pull
+              cd ~/app/nyapu
+              pip install --upgrade pip
+              pipenv install
+              pipenv shell
+              python ~/app/nyapu/nyapu/manage.py migrate
+              python ~/app/nyapu/nyapu/manage.py collectstatic --noinput
+              sudo systemctl reload nginx.service
+              cd ~/app/nyapu/nyapu
+              pkill gunicorn
+              gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D
+              ps -aux | grep gunicorn
+            '
 
 # テストが成功した場合のみ、deployを実行。
 workflows:
