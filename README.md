@@ -60,7 +60,10 @@
 - Gunicorn
 - Docker/Docker-compose
 
-##  ７、テスト
+## ７、DB設計
+![image](https://user-images.githubusercontent.com/112099340/191403317-a630b4bc-dacf-48d9-8cd4-8a442a0c02e1.png)
+
+## ８、テスト
 - ユニットテスト  
 基本機能（ログイン、日記の作成・更新・削除、コメントの作成・削除）をユニットテストしています。
 
