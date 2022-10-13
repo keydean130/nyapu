@@ -8,8 +8,6 @@ from selenium.webdriver.common.keys import Keys
 
 from selenium.webdriver.support.ui import WebDriverWait
 
-
-
 class UiTest(StaticLiveServerTestCase):
     fixtures = ['test/test_view.json']
 
@@ -170,7 +168,7 @@ class UiTest(StaticLiveServerTestCase):
         """地図機能を検証する"""
 
         # 地図処理の待ち時間
-        wait = WebDriverWait(self.selenium, 30)
+        wait = WebDriverWait(self.selenium, 10)
 
         # 地図ページを開く
         self.selenium.get('http://nyapu:8000' + str(reverse_lazy('diary:map')))

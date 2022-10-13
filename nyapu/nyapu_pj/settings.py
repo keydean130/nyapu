@@ -6,11 +6,6 @@ DEBUG = False
 # 許可するホストリスト
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 
-# ファイルの配置場所
-STATICFILES_DIRS = (
-os.path.join(BASE_DIR, "static"),
-)
-
 # 静的ファイルの配置場所
 STATIC_ROOT = '/usr/share/nginx/html/static'
 MEDIA_ROOT = '/usr/share/nginx/html/media'

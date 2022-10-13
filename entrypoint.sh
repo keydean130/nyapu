@@ -13,6 +13,5 @@ fi
 
 python /usr/src/app/nyapu/manage.py flush --no-input
 python /usr/src/app/nyapu/manage.py migrate --settings nyapu_pj.settings_dev
-python /usr/src/app/nyapu/manage.py collectstatic --no-input --clear
 python /usr/src/app/nyapu/manage.py loaddata test/test_view
 exec "$@"

@@ -131,6 +131,10 @@ IMAGE_URL = '/images/'
 # メディア用
 MEDIA_URL = '/media/'
 
+# ファイルの配置場所
+STATICFILES_DIRS = (
+os.path.join(BASE_DIR, "static"),
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
