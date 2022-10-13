@@ -43,6 +43,8 @@ jobs:
 
   # EC2にSSH接続し、デプロイを実行する
   deploy:
+    machine:
+      image: ubuntu-2204:2022.04.2
     steps:
       - checkout
       # CircleCIに登録した秘密鍵を呼び出す。
