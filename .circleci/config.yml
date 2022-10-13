@@ -1,12 +1,12 @@
 # circleCIのバージョン指定
 version: 2.1
 jobs:
+  # Djangoのテストを実行
   build:
     working_directory: ~/nyapu_project
     machine: 
       image: ubuntu-2204:2022.04.2
     steps:
-# Djangoのテストを実行
       - checkout
       - run:
           name: make env file
@@ -41,7 +41,7 @@ jobs:
           name: docker-compose down
           command: docker-compose down
 
-# EC2にSSH接続し、デプロイを実行する
+  # EC2にSSH接続し、デプロイを実行する
   deploy:
     steps:
       - checkout
@@ -70,7 +70,7 @@ jobs:
 
 # テストが成功した場合のみ、deployを実行。
 workflows:
-  version: 2
+  version: 2.1
   build_and_deploy:
     jobs:
       - build
