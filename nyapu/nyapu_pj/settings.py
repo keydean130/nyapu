@@ -14,6 +14,7 @@ os.path.join(BASE_DIR, "static"),
 # 静的ファイルの配置場所
 STATIC_ROOT = '/usr/share/nginx/html/static'
 MEDIA_ROOT = '/usr/share/nginx/html/media'
+IMAGE_ROOT = '/usr/share/nginx/html/media/images'
 
 # Amazon SES
 AWS_SES_ACCESS_KEY_ID = os.environ.get('AWS_SES_ACCESS_KEY_ID')
