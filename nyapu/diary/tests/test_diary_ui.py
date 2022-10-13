@@ -195,8 +195,8 @@ class UiTest(StaticLiveServerTestCase):
 
         # APIの通信が完了するまで待つ
         # 日記を見るボタンをクリック
-        mapelement.diary_button_element = self.selenium.find_element(By.NAME, 'diary_d')
-        mapelement.diary_button_element.send_keys(Keys.ENTER)
+        mapelement.diary_button_element = self.selenium.find_elements(By.NAME, 'diary_d')
+        mapelement.diary_button_element[1].send_keys(Keys.ENTER)
 
         # ページタイトルの検証
         self.assertEquals('日記詳細 | にゃっぷ', self.selenium.title)

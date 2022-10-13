@@ -36,7 +36,7 @@ jobs:
           command: sleep 30
       - run:
           name: test
-          command: docker-compose exec nyapu python /usr/src/app/nyapu/manage.py test
+          command: docker-compose exec nyapu python /usr/src/app/nyapu/manage.py test diary accounts
       - run:
           name: docker-compose down
           command: docker-compose down
