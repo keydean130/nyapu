@@ -47,7 +47,8 @@ jobs:
        - checkout
        # CircleCIに登録した秘密鍵を呼び出す。
        - add_ssh_keys:
-       - run: ssh ${USER_NAME}@${HOST_NAME} 'rm -rf ~/app &&
+       - run: >
+        ssh ${USER_NAME}@${HOST_NAME} 'rm -rf ~/app &&
         mkdir ~/app && cd ~/app && git pull && cd ~/app/nyapu &&
         pip install --upgrade pip && pipenv install && pipenv shell &&
         python ~/app/nyapu/nyapu/manage.py migrate &&
