@@ -1,0 +1,72 @@
+[
+  {
+    "model": "accounts.customuser",
+    "pk": 100,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$2Oyhl2M9osBmJqRxfflm6d$KpTVfTD8fXHGnS75eU5GG2DjRkLbNnYYGguaYHhnCN8=",
+      "last_login": "2022-06-07T13:09:31.834Z",
+      "is_superuser": true,
+      "username": "uitest1",
+      "first_name": "",
+      "last_name": "",
+      "email": "uitest1@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2022-06-07T13:05:56.903Z",
+      "avatar": "",
+      "profile": "",
+      "groups": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 101,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$2Oyhl2M9osBmJqRxfflm6d$KpTVfTD8fXHGnS75eU5GG2DjRkLbNnYYGguaYHhnCN8=",
+      "last_login": "2022-06-07T13:09:31.834Z",
+      "is_superuser": true,
+      "username": "testonly",
+      "first_name": "",
+      "last_name": "",
+      "email": "testonly@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2022-06-07T13:05:56.903Z",
+      "avatar": "",
+      "profile": "",
+      "groups": []
+    }
+  },
+  {
+    "model": "diary.diary",
+    "pk": 100,
+    "fields": {
+      "user": 100,
+      "title": "タイトル1",
+      "content": "一つ目の日記本文",
+      "created_at": "2022-06-07T13:11:23.615Z",
+      "updated_at": "2022-06-07T13:11:23.615Z",
+      "photo1": "",
+      "photo2": "",
+      "photo3": "",
+      "lat": 35.709,
+      "lon": 139.7319
+    }
+  },
+  {
+    "model": "diary.diary",
+    "pk": 101,
+    "fields": {
+      "user": 100,
+      "title": "2つめの記事",
+      "content": "二つ目の日記本文",
+      "created_at": "2022-06-07T13:12:19.457Z",
+      "updated_at": "2022-06-07T13:13:12.822Z",
+      "photo1": "",
+      "photo2": "",
+      "photo3": "",
+      "lat": 35.709,
+      "lon": 139.7319
+    }
+  }
+]

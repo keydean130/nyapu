@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}トップページ ｜ にゃっぷ{% endblock %}
+
+{% block contents %}
+<script src="{% static 'js/script.js' %}"></script>
+<style>
+#map {
+    height:40vh;
+}
+</style>
+<div class="container my-div-style">
+    <div class="row mx-auto">
+        <div class="col-sm-12 col-md-6 mx-auto">
+            <div class="text-center shadow border mt-3">
+                <p class="pt-3">
+                    <strong>地図から探す</strong>
+                </p>
+                <form id="form_area" action="{% url 'diary:mapping' %}" method="post">
+                    {% csrf_token %}
+                </form>
+                <div id="map" class="border text-center"></div>
+                <button class="btn btn-primary mt-2 mb-2 me-2 col-5" onClick="getgeo()">現在地を取得</button>
+                <a href="{% url 'diary:map' %}" class="text-center text-decoration-none">
+                    <button class="btn btn-primary mt-2 mb-2 ms-2 col-5">全画面表示</button>
+                </a>
+            </div>
+            <div class="text-center h-auto shadow border mt-4 mb-2">
+                <p class="pt-3">
+                    <strong>キーワードで探す</strong>
+                </p>
+                <div class="text-center mt-3">{% include 'search.html' %}
+                </div>
+            </div>
+            {% for diary in diary_list %}
+            <div class="border shadow mt-3 pt-2">
+                <a href="{% url 'diary:diary_list' diary.user %}" class="text-decoration-none">
+                    <div class="text-center">
+                        <p class="pt-2">
+                            <strong>{{ diary.user }}</strong>
+                        </p>
+                    </div>
+                </a>
+                <a href="{% url 'diary:diary_detail' diary.pk %}" class="text-decoration-none">
+                    <div class="text-center">
+                        {% if diary.photo1 %}
+                        <img src="{{ diary.photo1.url }}" class="img-clip border"/>
+                        {% endif %}
+                        <p class="pt-2">
+                            <span>{{ diary.title | truncatechars:20 }}</span>
+                        </p>
+                        <p>{{ diary.content | truncatechars:20 }}
+                        </p>
+                    </div>
+                </a>
+                <p class="post-meta text-end p-sm-2 date-time">{{ diary.created_at }}
+                </p>
+                <div class="p-sm-2">
+                    {% include 'like.html' %}
+                </div>
+                <div class="p-sm-2">
+                     コメント数　{{ diary.comment_set.count }}
+                </div>
+            </div>
+            {% empty %}
+            <p>日記がありません。</p>
+            {% endfor %}
+            <!-- ページネーション処理　-->
+            {% if is_paginated %}
+                <ul class="pagination mt-3">
+                    <!-- 前ページへのリンク　-->
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                 <!-- ページ表示　-->
+                    {% for page_num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == page_num %}
+                            <li class="page-item active">
+                                <a class="page-link" href="?page={{ page.num }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_num }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                 <!-- 次ページへのリンク　-->
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(event){
+        $(document).on('click', '#like', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'diary:like' %}",
+                data: {
+                    'diary_id': $(this).attr('name'),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                dataType: 'json',
+            }).done(function(response) {
+                selector = document.getElementsByName(response.diary_id);
+                if(response.liked){
+                    $(selector).html("<i class='fas fa-heart like-red' name='" + response.diary_id + "-like-red'></i>");
+                }
+                else {
+                    $(selector).html("<i class='far fa-heart' name='" + response.diary_id + "-like-none'></i>");
+                }
+                selector2 = document.getElementsByName(response.diary_id + "-count");
+                $(selector2).text(response.count);
+            }).fail(function() {
+                alert('いいね処理でエラーが起きました');
+            });
+        });
+    });
+</script>
+<script>
+//マップの表示位置を指定(緯度・経度)
+var map = L.map('map').setView([35.39291572, 139.44288869], 9);
+//地図データはOSMから読み込み
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+//予めグローバル変数として定義しておく
+var marker;
+//マップにマーカーを描画
+function map_draw(map_diaries){
+
+    console.log("マップドロー")
+
+    for (let diary of map_diaries ){
+
+        var myIcon = L.icon({
+            iconUrl: "{% static 'assets/img/nyapu.png' %}",
+            iconSize: [50, 50],  // アイコンサイズ
+            popupAnchor: [0, -20] //ポップアップの位置
+        });
+        //ポップアップする文字（HTML可、ここでは画像を表示）
+        var d_detail = "{% url 'diary:diary_detail' 123456 %}".replace(/123456/,diary["id"]);
+        var sucontents = "<img src=\"" + "{% get_media_prefix %}" + diary["photo1"] + "\" class=\"img-clip border\"/>" + "<br>" + "<button name='diary_d' class=\"btn btn-primary col-12\" type=\"button\" onclick=\"location.href=\'" + d_detail + "\'\">日記を見る</button>";
+
+        //ポップアップオブジェクトを作成
+        var popup1 = L.popup({ maxWidth: 500 }).setContent(sucontents);
+
+        L.marker([diary["lat"], diary["lon"]], {icon: myIcon}).addTo(map).bindPopup(popup1).openPopup();
+    }
+}
+</script>
+{% endblock %}
+
+

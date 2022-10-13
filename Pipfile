@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+Django = "3.2.14"
+gunicorn = "*"
+psycopg2-binary = "*"
+django-ses = "*"
+django-widget-tweaks = "*"
+selenium = "*"
+django-allauth = "*"
+Pillow = "*"
+coverage = "*"
+
+[requires]
+python_version = "3.7"

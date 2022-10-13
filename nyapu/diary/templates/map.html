@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}にゃっぷ | にゃっぷ{% endblock %}
+
+{% block active_diary_list %}active{% endblock %}
+
+{% block contents %}
+<script src="{% static 'js/script.js' %}"></script>
+<style>
+#map {
+    height:70vh;
+}
+</style>
+<div class="row mx-0 my-div-style">
+    <div class="col-sm-12 border shadow">
+        <div id="map" class="text-center"></div>
+    </div>
+    <div class="col-sm-12 text-center">
+        <form id="form_area" action="{% url 'diary:mapping' %}" method="post">
+            {% csrf_token %}
+        </form>
+        <button class="btn btn-primary mt-2 mb-2 me-2 col-5" onClick="getgeo()">現在地周辺を探す</button>
+        <a href="{% url 'diary:diary' %}" class="text-center text-decoration-none">
+            <button class="btn btn-primary mt-2 mb-2 ms-2 col-5">ホームに戻る</button>
+        </a>
+    </div>
+</div>
+<script>
+//マップの表示位置を指定(緯度・経度)
+var map = L.map('map').setView([35.39291572, 139.44288869], 9);
+//地図データはOSMから読み込み
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+//予めグローバル変数として定義しておく
+var marker;
+
+//マップにマーカーを描画
+function map_draw(map_diaries){
+
+    console.log("マップドロー")
+
+    for (let diary of map_diaries ){
+
+        var myIcon = L.icon({
+            iconUrl: "{% static 'assets/img/nyapu.png' %}",
+            iconSize: [50, 50],  // アイコンサイズ
+            popupAnchor: [0, -20] //ポップアップの位置
+        });
+
+        //ポップアップする文字（HTML可、ここでは画像を表示）
+        var d_detail = "{% url 'diary:diary_detail' 123456 %}".replace(/123456/,diary["id"]);
+        var sucontents = "<img src=\"" + "{% get_media_prefix %}" + diary["photo1"] + "\" class=\"img-clip border\"/>" + "<br>" + "<button name='diary_d' class=\"btn btn-primary col-12\" type=\"button\" onclick=\"location.href=\'" + d_detail + "\'\">日記を見る</button>";
+
+        //ポップアップオブジェクトを作成
+        var popup1 = L.popup({ maxWidth: 500 }).setContent(sucontents);
+
+        L.marker([diary["lat"], diary["lon"]], {icon: myIcon}).addTo(map).bindPopup(popup1).openPopup();
+    }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}いいねした日記 | にゃっぷ {% endblock %}
+
+{% block active_like_diary_list %}active{% endblock %}
+
+{% block head %}
+<link href="{% static 'css/clean-blog.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block contents %}
+<script>
+    // 最初のロード時とリサイズ時に発火
+    $(window).on("load resize", function() {
+        // id="target"のwidthを取得
+        var width = $("#target1").width();
+        // class="circle"のheightに設定
+        $(".circle").css({"height": width});
+    });
+</script>
+<script>
+    // 最初のロード時とリサイズ時に発火
+    $(window).on("load resize", function() {
+        // id="target"のwidthを取得
+        var width = $("#target2").width();
+        // class="square"のheightに設定
+        $(".square").css({"height": width});
+    });
+</script>
+<div class="container my-div-style">
+    <div class="row mx-auto">
+        <strong class="w-100 pt-2 text-center">
+            {{ user.username }}さんがいいねした日記
+        </strong>
+        {% for diary in object_list %}
+            <div class="col-4 border" id="target2">
+                <a href="{% url 'diary:diary_detail' diary.pk %}" class="border square">
+                    {% if diary.photo1 %}
+                        <img src="{{ diary.photo1.url }}" class="fit-img"/>
+                    {% endif %}
+                </a>
+            </div>
+        {% empty %}
+            <p>いいねした日記がありません。</p>
+        {% endfor %}
+        <!-- ページネーション処理　-->
+        {% if is_paginated %}
+            <ul class="pagination mt-3">
+                <!-- 前ページへのリンク　-->
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+             <!-- ページ表示　-->
+                {% for page_num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == page_num %}
+                        <li class="page-item active">
+                            <a class="page-link" href="#">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+             <!-- 次ページへのリンク　-->
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_object.next_page_number }}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

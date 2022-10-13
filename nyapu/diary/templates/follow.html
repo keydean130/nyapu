@@ -1,0 +1,12 @@
+<form action="{% url 'diary:follow' %}" method="POST" >
+    {% csrf_token %}
+    {% if item.id in followed_list %}
+    <button id="follow" name="{{item.id}}" class="btn btn-outline-primary">
+        <strong name="{{item.id}}-follow">フォロー中</strong>
+    </button>
+    {% else %}
+    <button id="follow" name="{{item.id}}" class="btn btn-outline-primary">
+        <strong name="{{item.id}}-follow-none">フォローする</strong>
+    </button>
+    {% endif %}
+</form>

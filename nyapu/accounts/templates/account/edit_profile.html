@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+       <div class="container my-div-style">
+           <div class="row">
+               <div class="col-10 mx-auto">
+                   <div class="card">
+                       <div class="card-header">
+                           <p><b>プロフィール更新</b></p>
+                       </div>
+                       <div class="card-body offset-sm-0">
+                           {# 画像ファイルをアップロードするためenctype="multipart/form-data"を指定#}
+                           <form action="{% url 'accounts:edit_profile' %}" method="post"
+                                 enctype="multipart/form-data" class="text-start">
+                               {% csrf_token %}
+                               {{ form.as_p }}
+                               <div class="text-center">
+                               <button class='btn btn-success mt-2' type="submit">更新</button>
+                               </div>
+                           </form>
+                       </div>
+                       <a href="{% url 'diary:diary_list' request.user %}" class="text-center">
+                           <button class="btn btn-primary mb-4 ">プロフィールに戻る</button>
+                       </a>
+                   </div>
+               </div>
+           </div>
+       </div>
+{% endblock %}

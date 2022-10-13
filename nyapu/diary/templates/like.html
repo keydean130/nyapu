@@ -1,0 +1,9 @@
+<form action="{% url 'diary:like' %}" method="POST" style="display:inline" >
+    {% csrf_token %}
+    {% if diary.id in liked_list %}
+        <button id="like" class="my-btn" name="{{diary.id}}" ><i class="fas fa-heart like-red fa-lg" name="{{diary.id}}-like-red"></i></button>
+    {% else %}
+        <button id="like" class="my-btn" name="{{diary.id}}" ><i class="far fa-heart fa-lg" name="{{diary.id}}-like-none"></i></button>
+    {% endif %}
+</form>
+<p name="{{diary.id}}-count" class="text-start count" style="display:inline" >{{ diary.like_set.count }}</p>

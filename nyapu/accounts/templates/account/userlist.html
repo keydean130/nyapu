@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contents %}
+<script>
+    // 最初のロード時とリサイズ時に発火
+    $(window).on("load resize", function() {
+        // id="target"のwidthを取得
+        var width = $("#target").width();
+        // class="square"のheightに設定
+        $(".square").css({"height": width});
+    });
+</script>
+<div class="my-div-style container">
+    <div class="row border">
+        <!--ページタイトル-->
+        <ul class="nav nav-tabs nav-justified mb-3">
+            {# ここから、リンク設定とBadgeの設定を変更 #}
+            <li class="nav-item"><a href="{% url 'diary:followings' %}" class="nav-link">フォロー</a></li>
+            <li class="nav-item"><a href="{% url 'diary:followers' %}" class="nav-link">フォロワー</a></li>
+            <li class="nav-item"><a href="{% url 'accounts:userlist' %}" class="nav-link active">全て</a></li>
+            {# ここまで、リンク設定とBadgeの設定を変更 #}
+        </ul>
+        <div class="text-center h-auto">
+            <strong>ユーザーを探す</strong>
+            {% include 'search.html' %}    
+        </div>
+        {% for item in object_list %}
+        <hr>
+        <div class="col-3 col-sm-2 col-md-1 mb-2" id="target">
+            {# プロフィール画像列 #}
+            <div class="rounded-circle text-center square border">
+                <a href="{% url 'diary:diary_list' item.username %}" class="text-decoration-none">
+                    {% if item.avatar %}
+                    <img class="fit-img" src="{{ item.avatar.url }}">
+                    {% else %}
+                    <img class="fit-img" src="{% static 'assets/img/nyapu.png' %}">
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+        <div class="row col-9 col-sm-10 col-md-11 mb-2">
+            <div class="col-6 col-sm-7 col-md-8 text-start">
+                {{ item.username }}
+                <br>
+                {{ item.profile }}
+            </div>
+            <div class="col-6 col-sm-5 col-md-4 mx-auto text-end">
+                {% include 'follow.html' %}
+            </div>
+        </div>
+        {% empty %}
+        <p name="user-none">ユーザーが見つかりません。</p>
+        {% endfor %}
+        <hr>
+        <!-- ページネーション処理　-->
+        {% if is_paginated %}
+            <ul class="pagination mt-3 ms-3">
+                <!-- 前ページへのリンク　-->
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+             <!-- ページ表示　-->
+                {% for page_num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == page_num %}
+                        <li class="page-item active">
+                            <a class="page-link" href="?page={{ page.num }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_num }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+             <!-- 次ページへのリンク　-->
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(event){
+        $(document).on('click', '#follow', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'diary:follow' %}",
+                data: {
+                    'item_id': $(this).attr('name'),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                dataType: 'json',
+            }).done(function(response) {
+                selector = document.getElementsByName(response.item_id);
+                if(response.followed){
+                    $(selector).html("<strong name='" + response.item_id + "-follow'>フォロー中</strong>");
+                }
+                else {
+                    $(selector).html("<strong name='" + response.item_id + "-follow-none'>フォローする</strong>");
+                }
+            }).fail(function() {
+                alert('フォロー処理でエラーが起きました');
+            });
+        });
+    });
+</script>
+
+{% endblock %}
+
+
+

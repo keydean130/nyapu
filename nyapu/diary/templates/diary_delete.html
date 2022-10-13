@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}日記削除 | にゃっぷ{% endblock %}
+
+{% block active_diary_list %}active{% endblock %}
+
+{% block contents %}
+<div class="container">
+    <div class="row mx-auto">
+        <div class="my-div-style w-100">
+            <form method="post">
+                {% csrf_token %}
+                <div class="text-center">
+                    <p>本当に削除しますか？</p>
+                    <button class="col-5 btn btn-primary mt-5" type="submit">削除</button>
+                    <a class="col-5 btn btn-secondary mt-5 ml-2" href="{% url 'diary:diary_detail' object.pk %}">キャンセル</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
