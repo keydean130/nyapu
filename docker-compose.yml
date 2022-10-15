@@ -43,7 +43,7 @@ services:
         volumes:
             - /dev/shm:/dev/shm   
 
-# トップレベルに書く「名前付きvolumes」は複数サービスから参照できる
+# トップレベルに書く「名前付きvolumes」は複数サービスから参照する
 volumes:
     postgres_data: 
 
