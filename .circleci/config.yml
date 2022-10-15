@@ -72,15 +72,16 @@ jobs:
               pip install --upgrade pip
               pipenv install
               pipenv shell
-              python ~/app/nyapu/nyapu/manage.py migrate
-              python ~/app/nyapu/nyapu/manage.py collectstatic --noinput
+              cd ~/app/nyapu/nyapu
+              python ./manage.py migrate
+              python ./manage.py collectstatic --noinput
               sudo systemctl reload nginx.service
               pkill gunicorn
               gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D
               ps -aux | grep gunicorn
             '
 
-# テストが成功した場合のみ、deployを実行。
+# テストが成功した場合のみ、deployを実行する。
 workflows:
   version: 2.1
   build_and_deploy:
