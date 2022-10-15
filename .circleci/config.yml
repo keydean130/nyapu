@@ -67,17 +67,17 @@ jobs:
             trap "aws ec2 revoke-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32" 0 1 2 3 15
             aws ec2 authorize-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32
             ssh ${USER_NAME}@${HOST_NAME} '
-              cd ~/app/nyapu
-              git pull origin master
-              pip install --upgrade pip
-              pipenv install
-              pipenv shell
-              cd ~/app/nyapu/nyapu
-              python /home/nyapu_admin/app/nyapu/nyapu/manage.py migrate
-              python /home/nyapu_admin/app/nyapu/nyapu/manage.py collectstatic --noinput
-              sudo systemctl reload nginx.service
-              pkill gunicorn
-              gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D
+              cd ~/app/nyapu &&
+              git pull origin master &&
+              pip install --upgrade pip &&
+              pipenv install &&
+              pipenv shell &&
+              cd ~/app/nyapu/nyapu &&
+              python /home/nyapu_admin/app/nyapu/nyapu/manage.py migrate &&
+              python /home/nyapu_admin/app/nyapu/nyapu/manage.py collectstatic --noinput &&
+              sudo systemctl reload nginx.service &&
+              pkill gunicorn &&
+              gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D &&
               ps -aux | grep gunicorn
             '
 
