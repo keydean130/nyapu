@@ -51,9 +51,9 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - ${KEY_FINGERPRINT}
+      - run: sudo pip install awscli           
       - run:
           name: ec2 deploy
-          run: sudo pip install awscli
           command: |
             set -ex
 
