@@ -53,6 +53,7 @@ jobs:
             - ${KEY_FINGERPRINT}
       - run:
           name: ec2 deploy
+          run: sudo pip install awscli
           command: |
             set -ex
 
