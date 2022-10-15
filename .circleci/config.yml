@@ -68,7 +68,7 @@ jobs:
             aws ec2 authorize-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32
             ssh ${USER_NAME}@${HOST_NAME} '
               cd ~/app/nyapu
-              git pull origin feature
+              git pull origin master
               cd ~/app/nyapu
               pip install --upgrade pip
               pipenv install
@@ -92,6 +92,6 @@ workflows:
           requires:
             - build
           # masterブランチがpushされた場合のみdeployするようにする。
-          #filters:
-          #  branches:
-          #    only: master
+          filters:
+            branches:
+              only: master
