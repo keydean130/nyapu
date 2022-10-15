@@ -54,9 +54,7 @@ jobs:
       - run: 
           name: ssh deploy 
           command: |
-            ssh ${USER_NAME}@${HOST_NAME} '
-              ls -ltar
-            '
+            ssh ${USER_NAME}@${HOST_NAME} 'ls -ltar'
 
 # テストが成功した場合のみ、deployを実行する。
 workflows:
