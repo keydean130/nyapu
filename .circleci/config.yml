@@ -49,8 +49,6 @@ jobs:
       - checkout
       # CircleCIに登録した秘密鍵を呼び出す。
       - add_ssh_keys:
-          fingerprints:
-            - "46:b9:27:d7:d7:e0:2c:33:35:dc:ce:6e:19:b6:0a:ce"
       - run: 
           name: ssh deploy 
           command: |
