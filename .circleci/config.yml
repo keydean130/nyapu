@@ -70,7 +70,7 @@ jobs:
               rm -rf ~/app
               mkdir ~/app
               cd ~/app
-              git pull
+              git pull origin feature
               cd ~/app/nyapu
               pip install --upgrade pip
               pipenv install
