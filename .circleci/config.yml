@@ -69,14 +69,12 @@ jobs:
             ssh ${USER_NAME}@${HOST_NAME} '
               cd ~/app/nyapu
               git pull origin master
-              cd ~/app/nyapu
               pip install --upgrade pip
               pipenv install
               pipenv shell
               python ~/app/nyapu/nyapu/manage.py migrate
               python ~/app/nyapu/nyapu/manage.py collectstatic --noinput
               sudo systemctl reload nginx.service
-              cd ~/app/nyapu/nyapu
               pkill gunicorn
               gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D
               ps -aux | grep gunicorn
