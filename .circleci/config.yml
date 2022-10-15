@@ -70,7 +70,7 @@ jobs:
               cd ~/app/nyapu &&
               git pull origin master &&
               pip install --upgrade pip &&
-              pipenv install &&
+              pipenv install --skip-lock --system --dev &&
               pipenv shell &&
               cd ~/app/nyapu/nyapu &&
               python /home/nyapu_admin/app/nyapu/nyapu/manage.py migrate &&
