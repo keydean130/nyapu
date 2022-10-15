@@ -73,8 +73,8 @@ jobs:
               pipenv install
               pipenv shell
               cd ~/app/nyapu/nyapu
-              python ./manage.py migrate
-              python ./manage.py collectstatic --noinput
+              python /home/nyapu_admin/app/nyapu/nyapu/manage.py migrate
+              python /home/nyapu_admin/app/nyapu/nyapu/manage.py collectstatic --noinput
               sudo systemctl reload nginx.service
               pkill gunicorn
               gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D
