@@ -67,8 +67,6 @@ jobs:
             trap "aws ec2 revoke-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32" 0 1 2 3 15
             aws ec2 authorize-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32
             ssh ${USER_NAME}@${HOST_NAME} '
-              rm -rf ~/app
-              mkdir ~/app
               cd ~/app
               git pull origin feature
               cd ~/app/nyapu
