@@ -70,15 +70,14 @@ jobs:
               cd ~/app/nyapu &&
               git pull origin master &&
               python3 -m pip install --upgrade pip &&
-              python3 -m pipenv install --skip-locks &&
-              python3 -m pipenv shell &&
+              python3 -m pipenv install --skip-lock &&
               cd ~/app/nyapu/nyapu &&
-              python3 /home/nyapu_admin/app/nyapu/nyapu/manage.py migrate &&
-              python3 /home/nyapu_admin/app/nyapu/nyapu/manage.py collectstatic --noinput &&
-              sudo systemctl reload nginx.service &&
-              pkill gunicorn &&
-              gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D &&
-              ps -aux | grep gunicorn
+              pipenv run python3 /home/nyapu_admin/app/nyapu/nyapu/manage.py migrate &&
+              pipenv run python3 /home/nyapu_admin/app/nyapu/nyapu/manage.py collectstatic --noinput &&
+              pipenv run sudo systemctl reload nginx.service &&
+              pipenv run pkill gunicorn &&
+              pipenv run gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D &&
+              pipenv run ps -aux | grep gunicorn
             '
 
 # テストが成功した場合のみ、deployを実行します。
