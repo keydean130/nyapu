@@ -81,7 +81,7 @@ jobs:
               ps -aux | grep gunicorn
             '
 
-# テストが成功した場合のみ、deployを実行する。
+# テストが成功した場合のみ、deployを実行します。
 workflows:
   version: 2.1
   build_and_deploy:
