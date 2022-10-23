@@ -10,10 +10,10 @@ services:
             - 80:80
             - 443:443
         volumes:
-            - ./nginx/ssl_certs:/var/lib/https-portal
+            - ../web_ssl_certs:/var/lib/https-portal
             - static_volume:/usr/share/nginx/html/static
             - media_volume:/usr/share/nginx/html/media
-            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ../nginx/conf.d:/etc/nginx/conf.d
         depends_on:
             - nyapu
         environment:
@@ -40,10 +40,10 @@ services:
         # データを永続化させる場合の設定。`host:container`でパスを記載
         volumes:
             - ./:/usr/src/app
-            - static_volume:/staticfiles
-            - media_volume:/mediafiles
+            - static_volume:/usr/share/nginx/html/static
+            - media_volume:/usr/share/nginx/html/media
         # 環境変数を指定
-        env_file: .env
+        env_file: ../.env
         # 接続するサービスを指定
         depends_on:
             - postgres
@@ -57,7 +57,7 @@ services:
         # データベースの永続化
         volumes:
             - postgres_data:/var/lib/postgresql/data
-        env_file: .env.db
+        env_file: ../.env.db
 
 
 # トップレベルに書く「名前付きvolumes」は複数サービスから参照できる
