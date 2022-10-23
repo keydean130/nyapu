@@ -3,9 +3,7 @@
 ## １、アプリ概要
 にゃっぷは位置情報を利用した、猫専用の日記投稿アプリです。  
 身近な場所にいる、可愛い猫たちを見つけられます。  
-||
-|:-:|
-|<img src="https://user-images.githubusercontent.com/112099340/188298226-050b5e46-1af1-4707-84ef-386621fd21ba.gif" width="750px">|
+<img src="https://user-images.githubusercontent.com/112099340/188298226-050b5e46-1af1-4707-84ef-386621fd21ba.gif" width="750px">|
 
 
 ## ２、制作意図
@@ -56,9 +54,15 @@
   - EC2
   - Route53
   - SES
-- Nginx
-- Gunicorn
-- Docker/Docker-compose
+- Nginx 1.12.2
+- Gunicorn 19.10
+- Docker 20.10.12/Docker-compose 1.25.0 (開発環境のみ)
+- CircleCI 2.1
+
+構成図は以下になります。
+![にゃっぷインフラ構成図](https://user-images.githubusercontent.com/112099340/197382272-3506273b-293f-4d91-94f0-6edfd33203ae.png)
+Githubにpushされると自動テストが実行されます。
+masterブランチにpushされ、自動テストが成功した場合のみ、EC2のAPサーバに自動デプロイされます。
 
 ## ７、DB設計
 ![image](https://user-images.githubusercontent.com/112099340/191403317-a630b4bc-dacf-48d9-8cd4-8a442a0c02e1.png)
