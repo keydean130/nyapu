@@ -61,7 +61,7 @@
 
 構成図は以下になります。
 ![にゃっぷインフラ構成図](https://user-images.githubusercontent.com/112099340/197382272-3506273b-293f-4d91-94f0-6edfd33203ae.png)
-Githubにpushされると自動テストが実行されます。
+Githubにpushされると自動テストが実行されます。  
 masterブランチにpushされ、自動テストが成功した場合のみ、EC2のAPサーバに自動デプロイされます。
 
 ## ７、DB設計
