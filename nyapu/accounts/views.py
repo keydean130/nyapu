@@ -24,10 +24,8 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         alluser_list = CustomUser.objects.all().exclude(id=self.request.user.id)
-                        
         # 検索機能
         query = self.request.GET.get('query')
-
         # usernameとprofileから文字列検索する
         if query:
             alluser_list = alluser_list.filter(

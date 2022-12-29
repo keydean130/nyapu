@@ -335,13 +335,11 @@ class CommentCreate(LoginRequiredMixin, generic.CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         # 日記を取得
         diary = get_object_or_404(Diary, pk=self.kwargs['pk'])
         context["diary"] = diary
         # 日記のコメントのオブジェクトをcommentsに格納
         context["comments"] = Comment.objects.filter(diary=diary.id)
-
         return context
 
 
