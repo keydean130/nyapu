@@ -62,7 +62,6 @@ class InquiryView(generic.FormView):
 
 
 class DiaryListView(LoginRequiredMixin, generic.ListView):
-
     model = Diary
     template_name = 'diary_list.html'
     paginate_by = 6
@@ -97,7 +96,6 @@ class DiaryListView(LoginRequiredMixin, generic.ListView):
 
 
 class LikeDiaryListView(LoginRequiredMixin, generic.ListView):
-
     model = Diary
     template_name = 'like_diary_list.html'
     paginate_by = 9
@@ -235,10 +233,12 @@ class DiaryDeleteView(LoginRequiredMixin, generic.DeleteView):
     def get_success_url(self):
         return reverse_lazy('diary:diary_list', kwargs={'username': self.request.user})
 
-    def test_func(self, **kwargs):
-        pk = self.kwargs["pk"]
-        diary = Diary.objects.get(pk=pk)
-        return (diary.user == self.request.user)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 日記を取得
+        diary = get_object_or_404(Diary, pk=self.kwargs['pk'])
+        context["diary"] = diary
+        return context
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "日記を削除しました。")
@@ -267,12 +267,11 @@ class MappingView(LoginRequiredMixin, View):
 
     def post(self, request):
         form = DiaryCreateForm(request.POST)
-
         if form.is_valid():
             print("OK")
             form.save()
-
         return redirect("diary:diary")
+
 
 def like_func(request):
     if request.method == "POST":
@@ -296,6 +295,7 @@ def like_func(request):
             'count': diary.like_set.count(),
         }
         return JsonResponse(context)
+
 
 def follow_func(request):
     if request.method == "POST":
