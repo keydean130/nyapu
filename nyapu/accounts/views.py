@@ -1,13 +1,13 @@
-from django.views.generic.edit import UpdateView
-from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import CustomUser, Relationship
-from .forms import ProfileForm
 from django.db.models import Q
+from django.views.generic import ListView
+from django.views.generic.edit import UpdateView
+
+from .forms import ProfileForm
+from .models import CustomUser, Relationship
 
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):
-
     template_name = 'account/edit_profile.html'
     model = CustomUser
     form_class = ProfileForm
@@ -18,7 +18,6 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
 
 
 class UserListView(LoginRequiredMixin, ListView):
-
     template_name = 'account/userlist.html'
     model = CustomUser
     paginate_by = 3
@@ -38,10 +37,8 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         # ログインユーザ以外のユーザのオブジェクトを取得
         alluser_list = CustomUser.objects.all().exclude(id=self.request.user.id)
-
         # フォローしているユーザのidをfollowed_listに格納
         followed_list = []
         for item in alluser_list:
@@ -49,7 +46,6 @@ class UserListView(LoginRequiredMixin, ListView):
             if followed.exists():
                 followed_list.append(item.id)
         context['followed_list'] = followed_list
-
         return context
 
 

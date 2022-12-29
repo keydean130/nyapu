@@ -1,19 +1,16 @@
 import logging
+
+from accounts.models import Relationship, CustomUser
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic, View
 
 from .forms import InquiryForm, DiaryCreateForm, CommentCreateForm
 from .models import Diary, Like, Comment
-from django.db.models import Q
-
-from django.shortcuts import get_object_or_404, redirect
-
-from accounts.models import Relationship, CustomUser
-
-from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +24,6 @@ class DiaryView(LoginRequiredMixin, generic.ListView):
         queryset = Diary.objects.order_by('-created_at')
         # 検索機能
         query = self.request.GET.get('query')
-
         # titleとcontentから文字列検索する
         if query:
             queryset = queryset.filter(
@@ -37,24 +33,19 @@ class DiaryView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):  # 追加
         context = super().get_context_data(**kwargs)
-
         # Like処理
         diaries = Diary.objects.all()
         liked_list = []
-
         # Like済みの日記のidをliked_listに格納
         for diary in diaries:
             liked = diary.like_set.filter(like_user=self.request.user)
             if liked.exists():
                 liked_list.append(diary.id)
         context["liked_list"] = liked_list
-
         # コメント数をcomment_countへ格納
         context["count"] = diary.comment_set.count()
-
         # マップ表示用に日記データをmap_diariesに格納   
         context['map_diaries'] = Diary.objects.all()
-
         return context
 
 
@@ -77,37 +68,31 @@ class DiaryListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 6
 
     def get_queryset(self, **kwargs):
-
         # ユーザをURLの文字列から取得する
         user_addr = CustomUser.objects.get(username=self.kwargs['username'])
-
         # ユーザの日記のオブジェクトをdiariesへ格納
         diaries = Diary.objects.filter(user=user_addr).order_by('-created_at')
-
         return diaries
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         # ユーザをURLの文字列から取得
         user_addr = CustomUser.objects.get(username=self.kwargs['username'])
         context['user_addr'] = user_addr
-
         # ユーザの投稿数をmy_diary_countへ格納
         context['my_diary_count'] = Diary.objects.filter(user=user_addr).count()
-
         # フォローしているユーザのオブジェクトリストをfollowing_listとして格納
         context['following_list'] = Relationship.objects.filter(follower_id=user_addr.id)
         # フォローしているユーザのidリストをfollowingsとして取得
-        followings = (Relationship.objects.filter(follower_id=user_addr.id)).values_list('following_id')
+        followings = (Relationship.objects.filter(follower_id=user_addr.id)).values_list(
+            'following_id')
         # フォローしているユーザの数をfollowing_countに格納
         context['following_count'] = CustomUser.objects.filter(id__in=followings).count()
-
         # フォロワーのidリストをfollowersとして取得
-        followers = (Relationship.objects.filter(following_id=user_addr.id)).values_list('follower_id')
+        followers = (Relationship.objects.filter(following_id=user_addr.id)).values_list(
+            'follower_id')
         # フォロワーの数をfollower_countに格納
         context['follower_count'] = CustomUser.objects.filter(id__in=followers).count()
-
         return context
 
 
@@ -118,34 +103,29 @@ class LikeDiaryListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 9
 
     def get_queryset(self, **kwargs):
-
         # ユーザをURLの文字列から取得する
         user_addr = CustomUser.objects.get(username=self.kwargs['username'])
-
         # Like済みの日記のidをliked_diariesとして取得
         liked_diaries = (Like.objects.filter(like_user=user_addr)).values_list('diary_id')
-
         # Like済みの日記のオブジェクトをlike_diary_listに格納
         like_diary_list = Diary.objects.filter(id__in=liked_diaries)
-
         return like_diary_list
 
 
 class FollowersView(LoginRequiredMixin, generic.ListView):
-
     model = CustomUser
     template_name = 'followers.html'
     paginate_by = 3
 
     def get_queryset(self):
         # フォロワーのidリストをfollowersとして取得
-        followers = (Relationship.objects.filter(following_id=self.request.user.id)).values_list('follower_id')
+        followers = (Relationship.objects.filter(following_id=self.request.user.id)).values_list(
+            'follower_id')
         # フォロワーのオブジェクトをfollower_listに格納
-        follower_list = CustomUser.objects.filter(id__in=followers).exclude(username=self.request.user.username)
-        
+        follower_list = CustomUser.objects.filter(id__in=followers).exclude(
+            username=self.request.user.username)
         # 検索機能
         query = self.request.GET.get('query')
-
         # usernameとprofileから文字列検索する
         if query:
             follower_list = follower_list.filter(
@@ -155,21 +135,19 @@ class FollowersView(LoginRequiredMixin, generic.ListView):
 
 
 class FollowingsView(LoginRequiredMixin, generic.ListView):
-
     model = CustomUser
     template_name = 'followings.html'
     paginate_by = 3
 
     def get_queryset(self):
         # フォローしているユーザのidをfollowingsに格納
-        followings = Relationship.objects.filter(follower=self.request.user.id).values_list('following_id')
-
+        followings = Relationship.objects.filter(follower=self.request.user.id).values_list(
+            'following_id')
         # フォローしているユーザのオブジェクトリストをfollowing_listとして格納
-        following_list = CustomUser.objects.filter(id__in=followings).exclude(username=self.request.user.username)
-                
+        following_list = CustomUser.objects.filter(id__in=followings).exclude(
+            username=self.request.user.username)
         # 検索機能
         query = self.request.GET.get('query')
-
         # usernameとprofileから文字列検索する
         if query:
             following_list = following_list.filter(
@@ -179,11 +157,9 @@ class FollowingsView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         # ログインユーザ以外のユーザのオブジェクトを取得
         alluser_list = CustomUser.objects.all().exclude(id=self.request.user.id)
         context['alluser_list'] = alluser_list
-
         # フォローしているユーザのidをfollowed_listに格納
         followed_list = []
         for item in alluser_list:
@@ -191,7 +167,6 @@ class FollowingsView(LoginRequiredMixin, generic.ListView):
             if followed.exists():
                 followed_list.append(item.id)
         context['followed_list'] = followed_list
-
         return context
 
 
@@ -210,7 +185,6 @@ class DiaryDetailView(LoginRequiredMixin, generic.DetailView):
             if liked.exists():
                 liked_list.append(diary.id)
         context["liked_list"] = liked_list
-
         # 日記のコメントのオブジェクトをcommentsに格納
         context["comments"] = Comment.objects.filter(diary_id=self.kwargs["pk"])
 
@@ -285,7 +259,6 @@ class MappingView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         # 辞書型のリスト型に仕立てる。
         map_diaries = list(Diary.objects.all().values())
-
         # contextと同じように辞書型にさせる
         json = {
             "map_diaries": map_diaries,
@@ -339,7 +312,6 @@ def follow_func(request):
         else:
             follow.create(following=item, follower=follower)
             followed = True
-
         context = {
             'item_id': item.id,
             'followed': followed,

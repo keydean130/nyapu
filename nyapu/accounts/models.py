@@ -1,8 +1,10 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
+
 
 class CustomUser(AbstractUser):
-    avatar = models.ImageField(upload_to='images', verbose_name='プロフィール画像', blank=True, null=True)
+    avatar = models.ImageField(upload_to='images', verbose_name='プロフィール画像', blank=True,
+                               null=True)
     profile = models.TextField(verbose_name='自己紹介', max_length=420, blank=True, null=True)
 
     class Meta:
@@ -10,7 +12,6 @@ class CustomUser(AbstractUser):
 
 
 class Relationship(models.Model):
-
     # 自分をフォローしてくれている人
     follower = models.ForeignKey(CustomUser, related_name='follower', on_delete=models.CASCADE)
     # 自分がフォローしている人
