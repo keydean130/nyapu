@@ -1,6 +1,7 @@
 from django import forms
 from .models import CustomUser
 
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
@@ -10,5 +11,3 @@ class ProfileForm(forms.ModelForm):
         super(ProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-
-
