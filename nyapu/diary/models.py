@@ -1,9 +1,7 @@
-from lib2to3.pgen2.pgen import PgenGrammar
 from django.db import models
 
 
 class Diary(models.Model):
-    '''日記モデル'''
     user = models.ForeignKey('accounts.CustomUser', verbose_name='ユーザー', related_name='user', on_delete=models.PROTECT)
     title = models.CharField(verbose_name='タイトル', max_length=2200, blank=True, null=True)
     content = models.TextField(verbose_name='本文', max_length=2200, blank=True, null=True)
