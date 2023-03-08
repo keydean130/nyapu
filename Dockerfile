@@ -14,8 +14,8 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update && apt-get install -y unzip wget vim
 
 # pipenvをインストール
-RUN pip install --upgrade pip \
-    && pip install pipenv
+RUN pip install --upgrade pip && \
+    pip install pipenv
 
 # ホストのpipfiletをコンテナの作業ディレクトリにコピー
 COPY ./Pipfile /usr/src/app/Pipfile
@@ -29,5 +29,5 @@ COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
 # ホストのカレントディレクトリ（現在はappディレクトリ）を作業ディレクトリにコピー
 COPY . /usr/src/app
 
-# entrypoint.shを実行。
+# entrypoint.shを実行
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
