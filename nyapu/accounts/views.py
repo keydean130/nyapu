@@ -20,7 +20,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
 class UserListView(LoginRequiredMixin, ListView):
     template_name = 'account/userlist.html'
     model = CustomUser
-    paginate_by = 3
+    paginate_by = 9
 
     def get_queryset(self):
         alluser_list = CustomUser.objects.all().exclude(id=self.request.user.id)

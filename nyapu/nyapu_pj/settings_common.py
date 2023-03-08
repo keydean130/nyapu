@@ -119,23 +119,17 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+# ブラウザで表示されるURLパスの設定
 # 静的ファイル用
 STATIC_URL = '/static/'
-
-# プロフィール画像用
-IMAGE_URL = '/images/'
-
 # メディア用
 MEDIA_URL = '/media/'
 
-# ファイルの配置場所
-STATICFILES_DIRS = (
-os.path.join(BASE_DIR, "static"),
-)
+# 静的ファイルの配置場所（collectstaticする時の集約対象。複数ディレクトリ指定可能）
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

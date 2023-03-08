@@ -5,9 +5,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# ファイルの配置場所
+# アップロードしたファイルの保存場所
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-IMAGE_ROOT = os.path.join(BASE_DIR, 'images')
 
 # ロギング設定
 LOGGING = {

@@ -99,14 +99,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 pt-2 text-center">
+        <div class="col-12 text-center">
             {% if user_addr == request.user %}
             <a class="btn btn-outline-secondary" href="{% url 'accounts:edit_profile' %}" >プロフィール更新</a>
             {% endif %}
         </div>
     </div>
-    <hr>
-    <div class="row">
+    <div class="row pt-3">
         {% for diary in diary_list %}
         <div class="col-4 border" id="target2">
             <a href="{% url 'diary:diary_detail' diary.pk %}" class="border square">
