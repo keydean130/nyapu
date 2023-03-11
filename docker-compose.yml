@@ -6,7 +6,7 @@ services:
         container_name: nyapu
         build: .
         # サービス起動後に入力されるコマンドを設定
-        command: python /usr/src/app/nyapu/manage.py runserver 0.0.0.0:8000 --settings nyapu_pj.settings_dev
+        command: pipenv run python /usr/src/app/nyapu/manage.py runserver 0.0.0.0:8000 --settings nyapu_pj.settings_dev
         # データを永続化させる場合の設定。`host:container`でパスを記載
         volumes:
             - .:/usr/src/app

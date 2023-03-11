@@ -21,7 +21,7 @@ RUN pip install --upgrade pip && \
 COPY ./Pipfile /usr/src/app/Pipfile
 
 # pipfileからパッケージをインストールしてDjango環境を構築
-RUN pipenv install --skip-lock --system --dev
+RUN python -m pipenv install --skip-lock
 
 # entrypoint.shをコピー
 COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
