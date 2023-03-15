@@ -55,7 +55,7 @@ class Predictor:
         if net is None:
             logger.info('model is not cached')
             # モデルの作成
-            net = models.vgg19_bn(pretrained=True)
+            net = models.vgg19_bn(pretrained=False)
             # 最終ノードの出力は品種数
             # このノードのみ勾配計算をすることになる
             in_features = net.classifier[6].in_features

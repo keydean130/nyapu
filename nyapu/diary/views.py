@@ -30,7 +30,9 @@ class DiaryView(LoginRequiredMixin, generic.ListView):
         # titleとcontentから文字列検索する
         if query:
             queryset = queryset.filter(
-                Q(title__icontains=query) | Q(content__icontains=query)
+                Q(title__icontains=query)
+                | Q(content__icontains=query)
+                | Q(photo1_most_similar_breed__icontains=query)
             )
         return queryset
 

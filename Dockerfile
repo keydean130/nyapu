@@ -20,7 +20,7 @@ RUN pip install --upgrade pip && \
 # ホストのpipfiletをコンテナの作業ディレクトリにコピー
 COPY ./Pipfile /usr/src/app/Pipfile
 
-# pipfileからパッケージをインストールしてDjango環境を構築
+# pipfileからパッケージをインストール
 RUN python -m pipenv install --skip-lock
 
 # entrypoint.shをコピー

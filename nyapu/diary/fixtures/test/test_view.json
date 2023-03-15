@@ -44,7 +44,13 @@
       "photo2": "",
       "photo3": "",
       "lat": 35.709,
-      "lon": 139.7319
+      "lon": 139.7319,
+      "photo1_most_similar_breed": "",
+      "photo1_second_similar_breed": "",
+      "photo1_third_similar_breed": "",
+      "photo1_most_similar_rate": 0,
+      "photo1_second_similar_rate": 0,
+      "photo1_third_similar_rate": 0
     }
   },
   {
@@ -60,7 +66,13 @@
       "photo2": "",
       "photo3": "",
       "lat": 35.709,
-      "lon": 139.7319
+      "lon": 139.7319,
+      "photo1_most_similar_breed": "",
+      "photo1_second_similar_breed": "",
+      "photo1_third_similar_breed": "",
+      "photo1_most_similar_rate": 0,
+      "photo1_second_similar_rate": 0,
+      "photo1_third_similar_rate": 0
     }
   }
 ]
