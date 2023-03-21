@@ -17,6 +17,9 @@ Pillow = "*"
 coverage = "*"
 torch = "*"
 torchvision = "*"
+boto = "*"
+django-ses = "*"
+gunicorn = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.9"
