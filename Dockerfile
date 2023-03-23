@@ -1,5 +1,5 @@
-# 公式からpython3.9 busterイメージをpull
-FROM python:3.9-buster
+# 公式からpython3.7 busterイメージをpull
+FROM python:3.7-buster
 
 # 作業ディレクトリを設定
 WORKDIR /usr/src/app
