@@ -21,7 +21,6 @@ function map_load(){
     }).done( function(data, status, xhr ) {
         console.log(data.map_diaries);
         map_draw(data.map_diaries);
-
     }).fail( function(xhr, status, error) {
         console.log(status + ":" + error );
     });

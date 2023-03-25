@@ -1,5 +1,5 @@
-# 公式からpython3.7 busterイメージをpull
-FROM python:3.7-buster
+# 公式からpython3.9 busterイメージをpull
+FROM python:3.9-buster
 
 # 作業ディレクトリを設定
 WORKDIR /usr/src/app
@@ -14,14 +14,14 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update && apt-get install -y unzip wget vim
 
 # pipenvをインストール
-RUN pip install --upgrade pip \
-    && pip install pipenv
+RUN pip install --upgrade pip && \
+    pip install pipenv
 
 # ホストのpipfiletをコンテナの作業ディレクトリにコピー
 COPY ./Pipfile /usr/src/app/Pipfile
 
-# pipfileからパッケージをインストールしてDjango環境を構築
-RUN pipenv install --skip-lock --system --dev
+# pipfileからパッケージをインストール
+RUN python -m pipenv install --skip-lock
 
 # entrypoint.shをコピー
 COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
@@ -29,5 +29,5 @@ COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
 # ホストのカレントディレクトリ（現在はappディレクトリ）を作業ディレクトリにコピー
 COPY . /usr/src/app
 
-# entrypoint.shを実行。
+# entrypoint.shを実行
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

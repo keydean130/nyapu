@@ -8,16 +8,13 @@
 <script src="{% static 'js/script.js' %}"></script>
 <style>
 #map {
-    height:40vh;
+    height:30vh;
 }
 </style>
 <div class="container my-div-style">
     <div class="row mx-auto">
-        <div class="col-sm-12 col-md-6 mx-auto">
-            <div class="text-center shadow border mt-3">
-                <p class="pt-3">
-                    <strong>地図から探す</strong>
-                </p>
+        <div class="col-sm-12 col-md-4 mt-3">
+            <div class="text-center shadow border">
                 <form id="form_area" action="{% url 'diary:mapping' %}" method="post">
                     {% csrf_token %}
                 </form>
@@ -27,79 +24,173 @@
                     <button class="btn btn-primary mt-2 mb-2 ms-2 col-5">全画面表示</button>
                 </a>
             </div>
-            <div class="text-center h-auto shadow border mt-4 mb-2">
-                <p class="pt-3">
-                    <strong>キーワードで探す</strong>
-                </p>
-                <div class="text-center mt-3">{% include 'search.html' %}
+            <div class="border shadow mt-3">
+                <div class="border-bottom text-center">
+                    <p class="pt-3">
+                        <strong>おすすめの猫</strong>
+                        (投稿した日記の猫の品種に基づく)
+                    </p>
                 </div>
-            </div>
-            {% for diary in diary_list %}
-            <div class="border shadow mt-3 pt-2">
-                <a href="{% url 'diary:diary_list' diary.user %}" class="text-decoration-none">
+                {% if some_cat_breed_diary %}
+                <a href="{% url 'diary:diary_list' some_cat_breed_diary.user %}" class="text-decoration-none">
                     <div class="text-center">
                         <p class="pt-2">
-                            <strong>{{ diary.user }}</strong>
+                            <strong>{{ some_cat_breed_diary.user }}</strong>
                         </p>
                     </div>
                 </a>
-                <a href="{% url 'diary:diary_detail' diary.pk %}" class="text-decoration-none">
+                <a href="{% url 'diary:diary_detail' some_cat_breed_diary.pk %}" class="text-decoration-none">
                     <div class="text-center">
-                        {% if diary.photo1 %}
-                        <img src="{{ diary.photo1.url }}" class="img-clip border"/>
+                        {% if some_cat_breed_diary.photo1 %}
+                        <img src="{{ some_cat_breed_diary.photo1.url }}" class="img-clip border"/>
                         {% endif %}
                         <p class="pt-2">
-                            <span>{{ diary.title | truncatechars:20 }}</span>
+                            <span>{{ some_cat_breed_diary.title | truncatechars:20 }}</span>
                         </p>
-                        <p>{{ diary.content | truncatechars:20 }}
+                        <p>{{ some_cat_breed_diary.content | truncatechars:20 }}
                         </p>
                     </div>
                 </a>
-                <p class="post-meta text-end p-sm-2 date-time">{{ diary.created_at }}
+                <p class="post-meta text-end p-sm-2 date-time">{{ some_cat_breed_diary.created_at }}
                 </p>
                 <div class="p-sm-2">
                     {% include 'like.html' %}
                 </div>
                 <div class="p-sm-2">
-                     コメント数　{{ diary.comment_set.count }}
+                     コメント数　{{ some_cat_breed_diary.comment_set.count }}
+                </div>
+                <div class="p-sm-2">
+                     # {{ some_cat_breed_diary.photo1_most_similar_breed }}
+                </div>
+                {% else %}
+                <div class="text-center">
+                    <p>おすすめの猫がいません</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="border shadow mt-3">
+                <div class="border-bottom text-center">
+                    <p class="pt-3">
+                        <strong>近くの猫</strong>
+                        (投稿した日記の位置情報に基づく)
+                    </p>
+                </div>
+                {% if nearest_diary %}
+                <a href="{% url 'diary:diary_list' nearest_diary.user %}" class="text-decoration-none">
+                    <div class="text-center">
+                        <p class="pt-2">
+                            <strong>{{ nearest_diary.user }}</strong>
+                        </p>
+                    </div>
+                </a>
+                <a href="{% url 'diary:diary_detail' nearest_diary.pk %}" class="text-decoration-none">
+                    <div class="text-center">
+                        {% if nearest_diary.photo1 %}
+                        <img src="{{ nearest_diary.photo1.url }}" class="img-clip border"/>
+                        {% endif %}
+                        <p class="pt-2">
+                            <span>{{ nearest_diary.title | truncatechars:20 }}</span>
+                        </p>
+                        <p>{{ nearest_diary.content | truncatechars:20 }}
+                        </p>
+                    </div>
+                </a>
+                <p class="post-meta text-end p-sm-2 date-time">{{ nearest_diary.created_at }}
+                </p>
+                <div class="p-sm-2">
+                    {% include 'like.html' %}
+                </div>
+                <div class="p-sm-2">
+                     コメント数　{{ nearest_diary.comment_set.count }}
+                </div>
+                <div class="p-sm-2">
+                     # {{ nearest_diary.photo1_most_similar_breed }}
+                </div>
+                {% else %}
+                <div class="text-center">
+                    <p>近くの猫がいません</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-8 mt-3">
+            <div class="col-11 text-center mx-auto h-auto pt-3 shadow border">
+                <div class="text-center">{% include 'search.html' %}
                 </div>
             </div>
-            {% empty %}
-            <p>日記がありません。</p>
-            {% endfor %}
-            <!-- ページネーション処理　-->
-            {% if is_paginated %}
-                <ul class="pagination mt-3">
-                    <!-- 前ページへのリンク　-->
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                 <!-- ページ表示　-->
-                    {% for page_num in page_obj.paginator.page_range %}
-                        {% if page_obj.number == page_num %}
-                            <li class="page-item active">
-                                <a class="page-link" href="?page={{ page.num }}">{{ page_num }}</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_num }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                 <!-- 次ページへのリンク　-->
-                    {% if page_obj.has_next %}
+            <div class="row mx-auto">
+                {% for diary in diary_list %}
+                <div class="col-11 mx-auto border shadow mt-3">
+                    <a href="{% url 'diary:diary_list' diary.user %}" class="text-decoration-none">
+                        <div class="text-center">
+                            <p class="pt-2">
+                                <strong>{{ diary.user }}</strong>
+                            </p>
+                        </div>
+                    </a>
+                    <a href="{% url 'diary:diary_detail' diary.pk %}" class="text-decoration-none">
+                        <div class="text-center">
+                            {% if diary.photo1 %}
+                            <img src="{{ diary.photo1.url }}" class="img-clip border"/>
+                            {% endif %}
+                            <p class="pt-2">
+                                <span>{{ diary.title | truncatechars:20 }}</span>
+                            </p>
+                            <p>{{ diary.content | truncatechars:20 }}
+                            </p>
+                        </div>
+                    </a>
+                    <p class="post-meta text-end p-sm-2 date-time">{{ diary.created_at }}
+                    </p>
+                    <div class="p-sm-2">
+                        {% include 'like.html' %}
+                    </div>
+                    <div class="p-sm-2">
+                         コメント数　{{ diary.comment_set.count }}
+                    </div>
+                    <div class="p-sm-2">
+                     # {{ diary.photo1_most_similar_breed }}
+                    </div>
+                </div>
+                {% empty %}
+                <p>日記がありません。</p>
+                {% endfor %}
+                <div class="col-11 text-center mx-auto">
+                    <!-- ページネーション処理　-->
+                    {% if is_paginated %}
+                    <ul class="pagination mt-3">
+                        <!-- 前ページへのリンク　-->
+                        {% if page_obj.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
-                                <span aria-hidden="true">&raquo;</span>
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                                <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
+                        {% endif %}
+                     <!-- ページ表示　-->
+                        {% for page_num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == page_num %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="?page={{ page.num }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_num }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                     <!-- 次ページへのリンク　-->
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
                     {% endif %}
-                </ul>
-            {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -163,5 +254,3 @@ function map_draw(map_diaries){
 }
 </script>
 {% endblock %}
-
-

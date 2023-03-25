@@ -9,7 +9,6 @@
 {% block contents %}
 <div class="container">
     <div class="row my-div-style">
-        <hr>
         <div class="col-sm-8 row mx-auto">
             <div class="col-12">
                 {% if object.photo1 %}
@@ -26,6 +25,15 @@
                     <img src="{{ object.photo3.url }}" class="img-clip border"/>
                 {% endif %}
             </div>
+            <div class="col-12 text-start">
+                <strong>一番目の写真の猫の品種予測 Top3: </strong>
+                <br>
+                1. {{ object.photo1_most_similar_breed　}} : {{ object.photo1_most_similar_rate }}%
+                <br>
+                2. {{ object.photo1_second_similar_breed }} : {{ object.photo1_second_similar_rate }}%
+                <br>
+                3. {{ object.photo1_third_similar_breed }} : {{ object.photo1_third_similar_rate }}%
+            </div>
             <hr>
             <div class="col-12 text-start">
                 <strong>投稿者: </strong>
@@ -39,7 +47,6 @@
             <hr>
             <div class="col-12 text-start">
                 <strong>本文: </strong>
-                <br>
                 {{ object.content|linebreaksbr }}
             </div>
             <hr>

@@ -5,10 +5,7 @@
     "fields": {
       "password": "pbkdf2_sha256$260000$2Oyhl2M9osBmJqRxfflm6d$KpTVfTD8fXHGnS75eU5GG2DjRkLbNnYYGguaYHhnCN8=",
       "last_login": "2022-06-07T13:09:31.834Z",
-      "is_superuser": true,
       "username": "uitest1",
-      "first_name": "",
-      "last_name": "",
       "email": "uitest1@gmail.com",
       "is_staff": true,
       "is_active": true,
@@ -24,10 +21,7 @@
     "fields": {
       "password": "pbkdf2_sha256$260000$2Oyhl2M9osBmJqRxfflm6d$KpTVfTD8fXHGnS75eU5GG2DjRkLbNnYYGguaYHhnCN8=",
       "last_login": "2022-06-07T13:09:31.834Z",
-      "is_superuser": true,
       "username": "testonly",
-      "first_name": "",
-      "last_name": "",
       "email": "testonly@example.com",
       "is_staff": true,
       "is_active": true,
@@ -50,7 +44,13 @@
       "photo2": "",
       "photo3": "",
       "lat": 35.709,
-      "lon": 139.7319
+      "lon": 139.7319,
+      "photo1_most_similar_breed": "",
+      "photo1_second_similar_breed": "",
+      "photo1_third_similar_breed": "",
+      "photo1_most_similar_rate": 0,
+      "photo1_second_similar_rate": 0,
+      "photo1_third_similar_rate": 0
     }
   },
   {
@@ -66,7 +66,13 @@
       "photo2": "",
       "photo3": "",
       "lat": 35.709,
-      "lon": 139.7319
+      "lon": 139.7319,
+      "photo1_most_similar_breed": "",
+      "photo1_second_similar_breed": "",
+      "photo1_third_similar_breed": "",
+      "photo1_most_similar_rate": 0,
+      "photo1_second_similar_rate": 0,
+      "photo1_third_similar_rate": 0
     }
   }
 ]

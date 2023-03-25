@@ -6,8 +6,10 @@ DEBUG = False
 # 許可するホストリスト
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 
-# 静的ファイルの配置場所
+# 静的ファイルの配置場所（collectstaticした時の集約場所）
 STATIC_ROOT = '/usr/share/nginx/html/static'
+
+# アップロードしたファイルの保存場所
 MEDIA_ROOT = '/usr/share/nginx/html/media'
 
 # Amazon SES

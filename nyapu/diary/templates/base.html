@@ -19,8 +19,9 @@
         <!-- leaflet -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-
+        <!-- jquery -->
         <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+
         {% block extrajs %}{% endblock %}
 
         <!-- Bootstrap core JS-->
@@ -58,6 +59,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'diary:diary' %}">ホーム</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'diary:map' %}">地図</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggl" id="navbarDropdownMenuLink" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,7 +74,6 @@
                                     <a class="dropdown-item" href="{% url 'diary:followers' %}">フォロワー</a>
                                     <a class="dropdown-item" href="{% url 'accounts:userlist' %}">ユーザーリスト</a>
                                     <a class="dropdown-item" href="{% url 'account_logout' %}">ログアウト</a>
-                                    <a class="dropdown-item" href="{% url 'diary:map' %}">にゃっぷ</a>
                                 </div>
                             </li>
                             {% else %}
