@@ -68,10 +68,10 @@ jobs:
             aws ec2 authorize-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32
             ssh ${USER_NAME}@${HOST_NAME} '
               source ~/.bash_profile
-              cd ~/app/nyapu &&
+              cd ~/nyapu &&
               git pull origin master &&
-              python3 -m pip install --upgrade pip &&
-              python3 -m pipenv install --skip-lock &&
+              python -m pip install --upgrade pip &&
+              python -m pipenv install --skip-lock &&
               cd ~/app/nyapu/nyapu &&
               pipenv run python3 /home/nyapu_admin/app/nyapu/nyapu/manage.py migrate &&
               pipenv run python3 /home/nyapu_admin/app/nyapu/nyapu/manage.py collectstatic --noinput &&

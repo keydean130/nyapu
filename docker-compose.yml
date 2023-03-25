@@ -23,7 +23,7 @@ services:
     postgres:
         container_name: postgres
         # 公式からイメージをpull
-        image: postgres:10.17-alpine
+        image: postgres:11-alpine
         # データベースの永続化
         volumes:
             - postgres_data:/var/lib/postgresql/data
