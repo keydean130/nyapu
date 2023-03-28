@@ -33,6 +33,22 @@ class Predictor:
             'スフィンクス',
             'タキシード'
         ]
+        # モデル生成
+        cache_key = 'model'
+        self.net = cache.get(cache_key)
+        if self.net is None:
+            logger.info('model is not cached')
+            # モデルの作成
+            self.net = models.vgg19_bn(pretrained=False)
+            # 最終ノードの出力は品種数
+            # このノードのみ勾配計算をすることになる
+            in_features = self.net.classifier[6].in_features
+            self.net.classifier[6] = nn.Linear(in_features, len(self.classes))
+            pth_path = 'pretrained/cat_breed_model_cpu.pth'
+            self.net.load_state_dict(torch.load(os.path.join(settings.BASE_DIR, pth_path)))
+            cache.set(cache_key, self.net, None)
+        else:
+            logger.info('use cached model')
 
     def predict(self, diary, k=3):
         logger.info(diary.photo1)
@@ -49,25 +65,9 @@ class Predictor:
         # 正規化
         img_transformed = preprocess_img(img)
         inputs = img_transformed.unsqueeze(0)
-        # モデル生成
-        cache_key = 'model'
-        net = cache.get(cache_key)
-        if net is None:
-            logger.info('model is not cached')
-            # モデルの作成
-            net = models.vgg19_bn(pretrained=False)
-            # 最終ノードの出力は品種数
-            # このノードのみ勾配計算をすることになる
-            in_features = net.classifier[6].in_features
-            net.classifier[6] = nn.Linear(in_features, len(self.classes))
-            pth_path = 'pretrained/cat_breed_model_cpu.pth'
-            net.load_state_dict(torch.load(os.path.join(settings.BASE_DIR, pth_path)))
-            cache.set(cache_key, net, None)
-        else:
-            logger.info('use cached model')
         # 推論
-        net.eval()
-        outputs = net(inputs)
+        self.net.eval()
+        outputs = self.net(inputs)
         batch_probs = F.softmax(outputs, dim=1)
         batch_probs, batch_indices = batch_probs.sort(dim=1, descending=True)
         for probs, indices in zip(batch_probs, batch_indices):
