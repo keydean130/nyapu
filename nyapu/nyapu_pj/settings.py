@@ -38,7 +38,6 @@ LOGGING = {
             'level': 'INFO',
         },
     },
-
     # ハンドラの設定
     'handlers': {
         'file': {
@@ -51,15 +50,14 @@ LOGGING = {
             'backupCount': 7,  # 保存しておくログファイル数
         },
     },
-
     # フォーマッタの設定
     'formatters': {
         'prod': {
             'format': '\t'.join([
                 '%(asctime)s',
-                '[%(levelname)]',
+                '[%(levelname)s]',
                 '%(pathname)s(Line:%(lineno)d)',
-                '%(massage)s'
+                '%(message)s'
             ])
         },
     }

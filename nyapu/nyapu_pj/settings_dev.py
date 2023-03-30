@@ -41,9 +41,9 @@ LOGGING = {
         'dev': {
             'format': '\t'.join([
                 '%(asctime)s',
-                '[%(levelname)]',
+                '[%(levelname)s]',
                 '%(pathname)s(Line:%(lineno)d)',
-                '%(massage)s'
+                '%(message)s'
             ])
         },
     }
