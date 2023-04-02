@@ -46,6 +46,7 @@ class Predictor:
             self.net.classifier[6] = nn.Linear(in_features, len(self.classes))
             pth_path = 'pretrained/cat_breed_model_cpu.pth'
             self.net.load_state_dict(torch.load(os.path.join(settings.BASE_DIR, pth_path)))
+            # 初回にキャッシュして、2回目以降はキャッシュ読み込み
             cache.set(cache_key, self.net, None)
         else:
             logger.info('use cached model')
