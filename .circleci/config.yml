@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   # Djangoのテストを実行
   build:
-    working_directory: ~/nyapu_project
+    working_directory: ~/nyapu
     machine: 
       image: ubuntu-2204:2022.04.2
     steps:
@@ -35,8 +35,11 @@ jobs:
           name: sleep for launch db to migrate at Django
           command: sleep 30
       - run:
+          name: change directory
+          command: docker-compose exec nyapu cd ~/nyapu
+      - run:
           name: test
-          command: docker-compose exec nyapu pipenv run python /usr/src/app/nyapu/manage.py test diary accounts
+          command: docker-compose exec nyapu pipenv run pytest
       - run:
           name: docker-compose down
           command: docker-compose down

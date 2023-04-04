@@ -5,9 +5,9 @@ from . import views
 
 app_name = 'diary'
 urlpatterns = [
-    path('', views.DiaryView.as_view(), name='diary'),
+    path('', views.HomeView.as_view(), name='home'),
     path('inquiry/', views.InquiryView.as_view(), name='inquiry'),
-    path('diary-list/<str:username>/', views.DiaryListView.as_view(), name='diary_list'),
+    path('profile/<str:username>/', views.ProfileView.as_view(), name='profile'),
     path('like-diary-list/<str:username>/', views.LikeDiaryListView.as_view(),
          name='like_diary_list'),
     path('diary-detail/<int:pk>/', views.DiaryDetailView.as_view(), name='diary_detail'),
