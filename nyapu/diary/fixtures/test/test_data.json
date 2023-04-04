@@ -1,0 +1,78 @@
+[
+  {
+    "model": "accounts.customuser",
+    "pk": 10,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$2Oyhl2M9osBmJqRxfflm6d$KpTVfTD8fXHGnS75eU5GG2DjRkLbNnYYGguaYHhnCN8=",
+      "last_login": "2022-06-07T13:09:31.834Z",
+      "username": "uitest1",
+      "email": "uitest1@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2022-06-07T13:05:56.903Z",
+      "avatar": "",
+      "profile": "",
+      "groups": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 11,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$2Oyhl2M9osBmJqRxfflm6d$KpTVfTD8fXHGnS75eU5GG2DjRkLbNnYYGguaYHhnCN8=",
+      "last_login": "2022-06-07T13:09:31.834Z",
+      "username": "testonly",
+      "email": "testonly@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2022-06-07T13:05:56.903Z",
+      "avatar": "",
+      "profile": "",
+      "groups": []
+    }
+  },
+  {
+    "model": "diary.diary",
+    "pk": 100,
+    "fields": {
+      "user": 10,
+      "title": "タイトル1",
+      "content": "一つ目の日記本文",
+      "created_at": "2022-06-07T13:11:23.615Z",
+      "updated_at": "2022-06-07T13:11:23.615Z",
+      "photo1": "",
+      "photo2": "",
+      "photo3": "",
+      "lat": 30.709,
+      "lon": 139.7319,
+      "photo1_most_similar_breed": "",
+      "photo1_second_similar_breed": "",
+      "photo1_third_similar_breed": "",
+      "photo1_most_similar_rate": 0,
+      "photo1_second_similar_rate": 0,
+      "photo1_third_similar_rate": 0
+    }
+  },
+  {
+    "model": "diary.diary",
+    "pk": 101,
+    "fields": {
+      "user": 11,
+      "title": "2つめの記事",
+      "content": "二つ目の日記本文",
+      "created_at": "2022-06-07T13:12:19.457Z",
+      "updated_at": "2022-06-07T13:13:12.822Z",
+      "photo1": "",
+      "photo2": "",
+      "photo3": "",
+      "lat": 35.709,
+      "lon": 139.7319,
+      "photo1_most_similar_breed": "",
+      "photo1_second_similar_breed": "",
+      "photo1_third_similar_breed": "",
+      "photo1_most_similar_rate": 0,
+      "photo1_second_similar_rate": 0,
+      "photo1_third_similar_rate": 0
+    }
+  }
+]
