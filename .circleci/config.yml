@@ -35,8 +35,17 @@ jobs:
           name: sleep for launch db to migrate at Django
           command: sleep 30
       - run:
+          name: docker-compose exec
+          command: docker-compose exec nyapu /bin/bash
+      - run:
+          name: change directory
+          command: cd ~/nyapu
+      - run:
           name: pytest
-          command: docker-compose exec nyapu pipenv run pytest ~/nyapu
+          command: pipenv run pytest
+      - run:
+          name: exit
+          command: exit
       - run:
           name: docker-compose down
           command: docker-compose down
