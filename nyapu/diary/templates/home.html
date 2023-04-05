@@ -32,14 +32,18 @@
                     </p>
                 </div>
                 {% if some_cat_breed_diary %}
-                <a href="{% url 'diary:profile' some_cat_breed_diary.user %}" class="text-decoration-none">
+                <a href="{% url 'diary:profile' some_cat_breed_diary.user %}"
+                   class="text-decoration-none"
+                   name="some_cat_breed_diary_user_{{ some_cat_breed_diary.user }}">
                     <div class="text-center">
                         <p class="pt-2">
                             <strong>{{ some_cat_breed_diary.user }}</strong>
                         </p>
                     </div>
                 </a>
-                <a href="{% url 'diary:diary_detail' some_cat_breed_diary.pk %}" class="text-decoration-none">
+                <a href="{% url 'diary:diary_detail' some_cat_breed_diary.pk %}"
+                   class="text-decoration-none"
+                   name="some_cat_breed_diary_{{ some_cat_breed_diary.pk }}">
                     <div class="text-center">
                         {% if some_cat_breed_diary.photo1 %}
                         <img src="{{ some_cat_breed_diary.photo1.url }}" class="img-clip border"/>
@@ -76,14 +80,18 @@
                     </p>
                 </div>
                 {% if nearest_diary %}
-                <a href="{% url 'diary:profile' nearest_diary.user %}" class="text-decoration-none">
+                <a href="{% url 'diary:profile' nearest_diary.user %}"
+                   class="text-decoration-none"
+                   name="nearest_diary_user_{{ nearest_diary.user }}">
                     <div class="text-center">
                         <p class="pt-2">
                             <strong>{{ nearest_diary.user }}</strong>
                         </p>
                     </div>
                 </a>
-                <a href="{% url 'diary:diary_detail' nearest_diary.pk %}" class="text-decoration-none">
+                <a href="{% url 'diary:diary_detail' nearest_diary.pk %}"
+                   class="text-decoration-none"
+                   name="nearest_diary_{{ nearest_diary.pk }}">
                     <div class="text-center">
                         {% if nearest_diary.photo1 %}
                         <img src="{{ nearest_diary.photo1.url }}" class="img-clip border"/>
@@ -121,14 +129,18 @@
             <div class="row mx-auto">
                 {% for diary in diary_list %}
                 <div class="col-11 mx-auto border shadow mt-3">
-                    <a href="{% url 'diary:profile' diary.user %}" class="text-decoration-none">
+                    <a href="{% url 'diary:profile' diary.user %}"
+                       class="text-decoration-none"
+                       name="diary_user_{{ diary.user }}">
                         <div class="text-center">
                             <p class="pt-2">
                                 <strong>{{ diary.user }}</strong>
                             </p>
                         </div>
                     </a>
-                    <a href="{% url 'diary:diary_detail' diary.pk %}" class="text-decoration-none">
+                    <a href="{% url 'diary:diary_detail' diary.pk %}"
+                       class="text-decoration-none"
+                       name="diary_{{ diary.pk }}">
                         <div class="text-center">
                             {% if diary.photo1 %}
                             <img src="{{ diary.photo1.url }}" class="img-clip border"/>
