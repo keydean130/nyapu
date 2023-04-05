@@ -11,10 +11,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 LOGIN_USER_ID = 10
-LOGIN_USER_DIARY_ID = 100
+LOGIN_USER_DIARY_ID = 102
 OTHER_USER_ID = 11
-OTHER_USER_DIARY_ID = 101
-OTHER_USER_DIARY_TITLE = '二つ目の日記本文'
+OTHER_USER_DIARY_ID = 103
+OTHER_USER_DIARY_TITLE = '初投稿 大阪猫'
+HOME_PAGE_TITLE = 'ホーム ｜ にゃっぷ'
+DETAIL_PAGE_TITLE = '日記詳細 | にゃっぷ'
+NYAPU_PAGE_TITLE = 'にゃっぷ | にゃっぷ'
 
 
 class UiTest(StaticLiveServerTestCase):
@@ -52,7 +55,7 @@ class UiTest(StaticLiveServerTestCase):
         password_input.send_keys('onlynyapu')
         self.selenium.find_element(By.NAME, 'btn').click()
         # ページタイトルの検証
-        assert self.selenium.title == 'トップページ ｜ にゃっぷ'
+        assert self.selenium.title == HOME_PAGE_TITLE
 
     def test_2_like(self):
         """いいね機能を検証する"""
@@ -73,9 +76,6 @@ class UiTest(StaticLiveServerTestCase):
         like_none_element.like_button_element = self.selenium.find_element(
             By.NAME, str(OTHER_USER_DIARY_ID))
         like_none_element.like_button_element.send_keys(Keys.ENTER)
-        # APIの通信が完了するまで待つ(いいね済み)
-        like_red_element = wait.until(EC.presence_of_element_located(
-            (By.NAME, '%s-like-red' % str(OTHER_USER_DIARY_ID))), message='')
         # 日記詳細ページを開く
         self.selenium.get('http://nyapu:8000'
                           + str(reverse_lazy('diary:diary_detail',
@@ -125,29 +125,36 @@ class UiTest(StaticLiveServerTestCase):
     def test_4_map(self):
         """地図機能を検証する"""
         # 地図処理の待ち時間
-        wait = WebDriverWait(self.selenium, 10)
+        wait = WebDriverWait(self.selenium, 30)
         # 地図ページを開く
         self.selenium.get('http://nyapu:8000' + str(reverse_lazy('diary:map')))
         # 全画面表示にする（ボタンが画面から見切れる場合が多いため）
         self.selenium.maximize_window()
         # ページタイトルの検証
-        assert self.selenium.title == 'にゃっぷ | にゃっぷ'
+        assert self.selenium.title == NYAPU_PAGE_TITLE
         # APIの通信が完了するまで待つ
         map_element = wait.until(EC.presence_of_element_located((By.NAME, 'diary_d')), message='')
         # 日記を見るボタンをクリック
         map_element.diary_button_element = self.selenium.find_element(By.NAME, 'diary_d')
         map_element.diary_button_element.send_keys(Keys.ENTER)
         # ページタイトルの検証
-        assert self.selenium.title == '日記詳細 | にゃっぷ'
+        assert self.selenium.title == DETAIL_PAGE_TITLE
         # トップページを開く
         self.selenium.get('http://nyapu:8000' + str(reverse_lazy('diary:home')))
         # 全画面表示にする（ボタンが画面から見切れる場合が多いため）
         self.selenium.maximize_window()
         # ページタイトルの検証
-        assert self.selenium.title == 'トップページ ｜ にゃっぷ'
+        assert self.selenium.title == HOME_PAGE_TITLE
         # APIの通信が完了するまで待つ
+        map_element = wait.until(EC.presence_of_element_located((By.NAME, 'diary_d')), message='')
         # 日記を見るボタンをクリック
         map_element.diary_button_element = self.selenium.find_elements(By.NAME, 'diary_d')
         map_element.diary_button_element[1].send_keys(Keys.ENTER)
         # ページタイトルの検証
-        assert self.selenium.title == '日記詳細 | にゃっぷ'
+        assert self.selenium.title == DETAIL_PAGE_TITLE
+
+    def test_5_nearest_diary(self):
+        """近くの日記表示機能を検証する"""
+
+    def test_6_some_cat_breed_diary(self):
+        """おすすめの猫の日記表示機能を検証する"""

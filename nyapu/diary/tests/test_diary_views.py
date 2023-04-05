@@ -11,6 +11,10 @@ from django.conf import settings
 
 from diary.models import Diary, Comment
 
+TEST_USER_DIARY_ID = 101
+NOT_FOUND_DIARY_ID = 999
+IMAGE_FILE_NAME = 'テスト_ベンガル.jpeg'
+
 
 class BaseTestCase(TestCase):
     """共通の事前準備処理をオーバライドした独自の基底テストクラス"""
@@ -33,49 +37,12 @@ class BaseTestCase(TestCase):
     @staticmethod
     def _upload_image(file_name=None):
         """テスト用の画像ファイルを読み込み"""
-        img_dir = 'diary/fixtures/test'
-        file_path = os.path.join(settings.BASE_DIR, img_dir, file_name)
+        file_path = os.path.join(settings.BASE_DIR, 'media', file_name)
         # バイナリファイルを読み込みモードでオープン
         with open(file_path, 'rb') as f:
             # 画像ファイルをオブジェクトにする
             file_obj = SimpleUploadedFile(file_name, f.read())
             return file_obj
-
-    def _create_diary(self):
-        """テスト用日記の作成"""
-        # ユーザーの設定
-        guest_user = get_user_model().objects.create_user(
-            username='guest1',
-            email='guest1@example.com',
-            password=self.password)
-        Diary.objects.create(
-            user=guest_user,
-            title='guest1のベンガル',
-            content='うちの猫です',
-            photo=self._upload_image(file_name='test_bengal.jpg'),
-            lat=35.709,
-            lon=139.7319
-        )
-        Diary.objects.create(
-            user=guest_user,
-            title='guest1のアビシニアン',
-            content='うちの猫です',
-            photo=self._upload_image(file_name='test_abyssinian.jpg'),
-            lat=35.709,
-            lon=139.7319
-        )
-
-
-# class TestHomeView(BaseTestCase):
-#     """DiaryView用のテストクラス"""
-#
-#     def test_get_queryset(self):
-#         """日記検索処理が成功することを検証する"""
-#         # テスト用日記の作成
-#         self._create_diary()
-#         keyword = 'guest1のベンガル'
-#         response = self.client.get(path='', data={'query': keyword})
-
 
 
 class TestDiaryCreateView(BaseTestCase):
@@ -86,7 +53,7 @@ class TestDiaryCreateView(BaseTestCase):
         # Postパラメータ
         params = {'title': 'テストタイトル',
                   'content': '本文',
-                  'photo1': self._upload_image(file_name='test_bengal.jpg'),
+                  'photo1': self._upload_image(file_name=IMAGE_FILE_NAME),
                   'photo2': '',
                   'photo3': '',
                   'lat': 35.709,
@@ -118,7 +85,7 @@ class TestDiaryUpdateView(BaseTestCase):
         assert Diary.objects.filter(title='タイトル編集前').count() == 1
         # Postパラメータ
         params = {'title': 'タイトル編集後',
-                  'photo1': self._upload_image(file_name='test_abyssinian.jpg'),
+                  'photo1': self._upload_image(file_name=IMAGE_FILE_NAME),
                   'lat': 35.709, 
                   'lon': 139.7319
                   }
@@ -134,7 +101,8 @@ class TestDiaryUpdateView(BaseTestCase):
     def test_update_diary_failure(self):
         """日記編集処理が失敗することを検証する"""
         # 日記編集処理(Post)を実行
-        response = self.client.post(reverse_lazy('diary:diary_update', kwargs={'pk': 999}))
+        response = self.client.post(reverse_lazy('diary:diary_update',
+                                                 kwargs={'pk': NOT_FOUND_DIARY_ID}))
         # 存在しない日記データを編集しようとしてエラーになることを検証
         assert response.status_code == 404
 
@@ -157,7 +125,8 @@ class TestDiaryDeleteView(BaseTestCase):
     def test_delete_diary_failure(self):
         """日記削除処理が失敗することを検証する"""
         # 日記削除処理(Post)を実行
-        response = self.client.post(reverse_lazy('diary:diary_delete', kwargs={'pk': 999}))
+        response = self.client.post(reverse_lazy('diary:diary_delete',
+                                                 kwargs={'pk': NOT_FOUND_DIARY_ID}))
         # 存在しない日記データを削除しようとしてエラーになることを検証
         assert response.status_code == 404
 
@@ -168,12 +137,11 @@ class TestCommentCreateView(BaseTestCase):
     def test_create_diary_success(self):
         """コメント作成処理が成功することを検証する"""
         # テスト用日記データの作成
-        diary = Diary.objects.create(pk=1000, user=self.test_user,
+        diary = Diary.objects.create(pk=TEST_USER_DIARY_ID, user=self.test_user,
                                      title="コメントテスト用",
-                                     photo1=self._upload_image(file_name='test_bengal.jpg'))
+                                     photo1=self._upload_image(file_name=IMAGE_FILE_NAME))
         # Postパラメータ
-        params = {'text': 'テストコメント',
-                  'pk': 1000}
+        params = {'text': 'テストコメント'}
         # コメント作成処理(Post)を実行
         response = self.client.post(reverse_lazy('diary:comment_create',
                                                  kwargs={'pk': diary.pk}), params)
@@ -187,7 +155,7 @@ class TestCommentCreateView(BaseTestCase):
         # テスト用日記データの作成
         diary = Diary.objects.create(user=self.test_user,
                                      title="コメントテスト用",
-                                     photo1=self._upload_image(file_name='test_bengal.jpg'))
+                                     photo1=self._upload_image(file_name=IMAGE_FILE_NAME))
         # コメント作成処理(Post)を実行
         response = self.client.post(reverse_lazy('diary:comment_create', kwargs={'pk': diary.pk}))
         # 必須フォームフィールドが未入力によりエラーになることを検証
@@ -200,9 +168,9 @@ class TestCommentDeleteView(BaseTestCase):
     def test_delete_diary_success(self):
         """コメント削除処理が成功することを検証する"""
         # テスト用日記データの作成
-        diary = Diary.objects.create(pk=99, user=self.test_user,
+        diary = Diary.objects.create(pk=TEST_USER_DIARY_ID, user=self.test_user,
                                      title="コメントテスト用",
-                                     photo1=self._upload_image(file_name='test_bengal.jpg'))
+                                     photo1=self._upload_image(file_name=IMAGE_FILE_NAME))
         # テスト用コメントデータの作成
         comment = Comment.objects.create(diary_id=diary.pk, comment_user=self.test_user,
                                          text='テストコメント')
@@ -220,7 +188,7 @@ class TestCommentDeleteView(BaseTestCase):
     def test_delete_diary_failure(self):
         """コメント削除処理が失敗することを検証する"""
         # 日記削除処理(Post)を実行
-        response = self.client.post(reverse_lazy('diary:comment_delete', kwargs={'pk': 999}),
-                                    follow=True)
+        response = self.client.post(reverse_lazy('diary:comment_delete',
+                                                 kwargs={'pk': NOT_FOUND_DIARY_ID}), follow=True)
         # 存在しない日記データを削除しようとしてエラーになることを検証
         assert response.status_code == 404
