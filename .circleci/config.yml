@@ -39,7 +39,7 @@ jobs:
           command: docker-compose exec nyapu /bin/bash
       - run:
           name: change directory
-          command: cd ~/nyapu
+          command: cd nyapu
       - run:
           name: pytest
           command: pipenv run pytest
