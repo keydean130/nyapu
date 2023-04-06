@@ -32,7 +32,10 @@ jobs:
           name: docker-compose up
           command: docker-compose up -d --build
       - run:
-          # 学習データを読み込む為、runserverに時間がかかる
+          # 学習データを読み込む為、runserverに時間がかかるので暫定対策
+          name: sleep for launch db to migrate at Django
+          command: sleep 500
+      - run:
           name: sleep for launch db to migrate at Django
           command: sleep 500
       - run:
