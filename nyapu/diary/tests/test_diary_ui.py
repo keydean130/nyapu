@@ -2,7 +2,6 @@
 import pytest
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from diary.models import Diary
 from django.urls import reverse_lazy
 from selenium import webdriver
 from selenium.webdriver.common.by import By
