@@ -33,7 +33,7 @@ jobs:
           command: docker-compose up -d --build
       - run:
           name: sleep for launch db to migrate at Django
-          command: sleep 30
+          command: sleep 600
       - run:
           name: docker-compose exec
           command: docker-compose exec nyapu /bin/bash
