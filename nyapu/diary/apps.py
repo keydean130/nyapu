@@ -9,6 +9,7 @@ class DiaryConfig(AppConfig):
     def ready(self):
         u"""django起動（runserver）時に実行する処理"""
         # 事前学習モデルをインスタンス化してキャッシュしておく
-        pred = Predictor()
+        # pred = Predictor()
+        pass
 
 
