@@ -24,101 +24,125 @@
                     <button class="btn btn-primary mt-2 mb-2 ms-2 col-5">全画面表示</button>
                 </a>
             </div>
-            <div class="border shadow mt-3">
-                <div class="border-bottom text-center">
+            <div class="border shadow mt-3 mx-auto">
+                <div class="text-center">
                     <p class="pt-3">
                         <strong>おすすめの猫</strong>
                         (投稿した日記の猫の品種に基づく)
                     </p>
                 </div>
-                {% if some_cat_breed_diary %}
-                <a href="{% url 'diary:profile' some_cat_breed_diary.user %}"
-                   class="text-decoration-none"
-                   name="some_cat_breed_diary_user_{{ some_cat_breed_diary.user }}">
-                    <div class="text-center">
-                        <p class="pt-2">
-                            <strong>{{ some_cat_breed_diary.user }}</strong>
+                <div class="row mx-auto">
+                    {% if some_cat_breed_diary %}
+                    <div class="col-12 mx-auto border shadow mt-3">
+                        <a href="{% url 'diary:profile' some_cat_breed_diary.user %}"
+                           class="text-decoration-none"
+                           name="some_cat_breed_diary_user_{{ some_cat_breed_diary.user }}">
+                            <div class="text-center">
+                                <p class="pt-2">
+                                    <strong>{{ some_cat_breed_diary.user }}</strong>
+                                </p>
+                            </div>
+                        </a>
+                        <a href="{% url 'diary:diary_detail' some_cat_breed_diary.pk %}"
+                           class="text-decoration-none"
+                           name="some_cat_breed_diary_{{ some_cat_breed_diary.pk }}">
+                            <div class="text-center">
+                                {% if some_cat_breed_diary.photo1 %}
+                                <img src="{{ some_cat_breed_diary.photo1.url }}" class="img-clip border"/>
+                                {% endif %}
+                                <p class="pt-2">
+                                    <span>{{ some_cat_breed_diary.title | truncatechars:20 }}</span>
+                                </p>
+                                <p>{{ some_cat_breed_diary.content | truncatechars:20 }}
+                                </p>
+                            </div>
+                        </a>
+                        <p class="post-meta text-end p-sm-2 date-time">{{ some_cat_breed_diary.created_at }}
                         </p>
-                    </div>
-                </a>
-                <a href="{% url 'diary:diary_detail' some_cat_breed_diary.pk %}"
-                   class="text-decoration-none"
-                   name="some_cat_breed_diary_{{ some_cat_breed_diary.pk }}">
-                    <div class="text-center">
-                        {% if some_cat_breed_diary.photo1 %}
-                        <img src="{{ some_cat_breed_diary.photo1.url }}" class="img-clip border"/>
+                        <div class="p-sm-2">
+                            <form action="{% url 'diary:like' %}" method="POST" style="display:inline" >
+                                {% csrf_token %}
+                                {% if some_cat_breed_diary.id in liked_list %}
+                                    <button id="like" class="my-btn" name="{{some_cat_breed_diary.id}}" ><i class="fas fa-heart like-red fa-lg" name="{{some_cat_breed_diary.id}}-like-red"></i></button>
+                                {% else %}
+                                    <button id="like" class="my-btn" name="{{some_cat_breed_diary.id}}" ><i class="far fa-heart fa-lg" name="{{some_cat_breed_diary.id}}-like-none"></i></button>
+                                {% endif %}
+                            </form>
+                            <p name="{{some_cat_breed_diary.id}}-count" class="text-start count" style="display:inline" >{{ some_cat_breed_diary.like_set.count }}</p>
+                        </div>
+                        <div class="p-sm-2">
+                             コメント数　{{ some_cat_breed_diary.comment_set.count }}
+                        </div>
+                        <div class="p-sm-2">
+                             # {{ some_cat_breed_diary.photo1_most_similar_breed }}
+                        </div>
+                        {% else %}
+                        <div class="text-center">
+                            <p>おすすめの猫がいません</p>
+                        </div>
                         {% endif %}
-                        <p class="pt-2">
-                            <span>{{ some_cat_breed_diary.title | truncatechars:20 }}</span>
-                        </p>
-                        <p>{{ some_cat_breed_diary.content | truncatechars:20 }}
-                        </p>
                     </div>
-                </a>
-                <p class="post-meta text-end p-sm-2 date-time">{{ some_cat_breed_diary.created_at }}
-                </p>
-                <div class="p-sm-2">
-                    {% include 'like.html' %}
                 </div>
-                <div class="p-sm-2">
-                     コメント数　{{ some_cat_breed_diary.comment_set.count }}
-                </div>
-                <div class="p-sm-2">
-                     # {{ some_cat_breed_diary.photo1_most_similar_breed }}
-                </div>
-                {% else %}
-                <div class="text-center">
-                    <p>おすすめの猫がいません</p>
-                </div>
-                {% endif %}
             </div>
             <div class="border shadow mt-3">
-                <div class="border-bottom text-center">
+                <div class="text-center">
                     <p class="pt-3">
                         <strong>近くの猫</strong>
                         (投稿した日記の位置情報に基づく)
                     </p>
                 </div>
-                {% if nearest_diary %}
-                <a href="{% url 'diary:profile' nearest_diary.user %}"
-                   class="text-decoration-none"
-                   name="nearest_diary_user_{{ nearest_diary.user }}">
-                    <div class="text-center">
-                        <p class="pt-2">
-                            <strong>{{ nearest_diary.user }}</strong>
+                <div class="row mx-auto">
+                    {% if nearest_diary %}
+                    <div class="col-12 mx-auto border shadow mt-3">
+                        <a href="{% url 'diary:profile' nearest_diary.user %}"
+                           class="text-decoration-none"
+                           name="nearest_diary_user_{{ nearest_diary.user }}">
+                            <div class="text-center">
+                                <p class="pt-2">
+                                    <strong>{{ nearest_diary.user }}</strong>
+                                </p>
+                            </div>
+                        </a>
+                        <a href="{% url 'diary:diary_detail' nearest_diary.pk %}"
+                           class="text-decoration-none"
+                           name="nearest_diary_{{ nearest_diary.pk }}">
+                            <div class="text-center">
+                                {% if nearest_diary.photo1 %}
+                                <img src="{{ nearest_diary.photo1.url }}" class="img-clip border"/>
+                                {% endif %}
+                                <p class="pt-2">
+                                    <span>{{ nearest_diary.title | truncatechars:20 }}</span>
+                                </p>
+                                <p>{{ nearest_diary.content | truncatechars:20 }}
+                                </p>
+                            </div>
+                        </a>
+                        <p class="post-meta text-end p-sm-2 date-time">{{ nearest_diary.created_at }}
                         </p>
-                    </div>
-                </a>
-                <a href="{% url 'diary:diary_detail' nearest_diary.pk %}"
-                   class="text-decoration-none"
-                   name="nearest_diary_{{ nearest_diary.pk }}">
-                    <div class="text-center">
-                        {% if nearest_diary.photo1 %}
-                        <img src="{{ nearest_diary.photo1.url }}" class="img-clip border"/>
+                        <div class="p-sm-2">
+                            <form action="{% url 'diary:like' %}" method="POST" style="display:inline" >
+                                {% csrf_token %}
+                                {% if nearest_diary.id in liked_list %}
+                                    <button id="like" class="my-btn" name="{{nearest_diary.id}}" ><i class="fas fa-heart like-red fa-lg" name="{{nearest_diary.id}}-like-red"></i></button>
+                                {% else %}
+                                    <button id="like" class="my-btn" name="{{nearest_diary.id}}" ><i class="far fa-heart fa-lg" name="{{nearest_diary.id}}-like-none"></i></button>
+                                {% endif %}
+                            </form>
+                            <p name="{{nearest_diary.id}}-count" class="text-start count" style="display:inline" >{{ nearest_diary.like_set.count }}</p>
+                        </div>
+                        <div class="p-sm-2">
+                             コメント数　{{ nearest_diary.comment_set.count }}
+                        </div>
+                        <div class="p-sm-2">
+                             # {{ nearest_diary.photo1_most_similar_breed }}
+                        </div>
+                        {% else %}
+                        <div class="text-center">
+                            <p>近くの猫がいません</p>
+                        </div>
                         {% endif %}
-                        <p class="pt-2">
-                            <span>{{ nearest_diary.title | truncatechars:20 }}</span>
-                        </p>
-                        <p>{{ nearest_diary.content | truncatechars:20 }}
-                        </p>
                     </div>
-                </a>
-                <p class="post-meta text-end p-sm-2 date-time">{{ nearest_diary.created_at }}
-                </p>
-                <div class="p-sm-2">
-                    {% include 'like.html' %}
                 </div>
-                <div class="p-sm-2">
-                     コメント数　{{ nearest_diary.comment_set.count }}
-                </div>
-                <div class="p-sm-2">
-                     # {{ nearest_diary.photo1_most_similar_breed }}
-                </div>
-                {% else %}
-                <div class="text-center">
-                    <p>近くの猫がいません</p>
-                </div>
-                {% endif %}
             </div>
         </div>
         <div class="col-sm-8 mt-3 mx-auto">
