@@ -34,7 +34,7 @@ jobs:
             curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
             sudo apt-get update
             sudo apt-get install git-lfs
-            git lfs install
+            ssh git@github.com git-lfs-authenticate keydean130/nyapu.git download
             git lfs pull
       - run:
           name: docker-compose up
