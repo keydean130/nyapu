@@ -13,7 +13,7 @@
 </style>
 <div class="container my-div-style">
     <div class="row mx-auto">
-        <div class="col-sm-8 mt-3">
+        <div class="col-sm-8 mt-3 mx-auto">
             <div class="text-center shadow border">
                 <form id="form_area" action="{% url 'diary:mapping' %}" method="post">
                     {% csrf_token %}
@@ -121,7 +121,7 @@
                 {% endif %}
             </div>
         </div>
-        <div class="col-sm-8 mt-3">
+        <div class="col-sm-8 mt-3 mx-auto">
             <div class="col-12 text-center mx-auto h-auto pt-3 shadow border">
                 <div class="text-center">{% include 'search.html' %}
                 </div>
