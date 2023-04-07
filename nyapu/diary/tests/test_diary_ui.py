@@ -2,6 +2,7 @@
 import pytest
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium.webdriver.common.action_chains import ActionChains
 from django.urls import reverse_lazy
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -67,7 +68,7 @@ class UiTest(StaticLiveServerTestCase):
         # 日記のキーワード検索
         query_input = self.selenium.find_element(By.NAME, 'query')
         query_input.send_keys(OTHER_USER_DIARY_TITLE)
-        self.selenium.find_element(By.NAME, 'search').click()
+        self.selenium.find_element(By.NAME, 'search').send_keys(Keys.ENTER)
         # 全画面表示にする（ボタンが画面から見切れる場合が多いため）
         self.selenium.maximize_window()
         # APIの通信が完了するまで待つ(未いいね)
@@ -100,7 +101,6 @@ class UiTest(StaticLiveServerTestCase):
         # ユーザーのキーワード検索
         query_input = self.selenium.find_element(By.NAME, 'query')
         query_input.send_keys('testonly')
-        self.selenium.find_element(By.NAME, 'search').click()
         # APIの通信が完了するまで待つ(未フォロー)
         unfollowed_element = wait.until(
             EC.presence_of_element_located(
