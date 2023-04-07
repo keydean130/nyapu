@@ -29,12 +29,8 @@ jobs:
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - run:
-          name: Install Git LFS
+          name: Git LFS pull
           command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get update
-            sudo apt-get install git-lfs
-            ssh git@github.com git-lfs-authenticate keydean130/nyapu.git download
             git lfs pull
       - run:
           name: docker-compose up
