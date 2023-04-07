@@ -36,7 +36,7 @@ jobs:
           command: sleep 30
       - run:
           name: pytest
-          command: docker-compose exec nyapu bash -c "cd ~/nyapu && pipenv run python manage.py pytest"
+          command: docker-compose exec nyapu bash -c "cd nyapu && pipenv run python manage.py pytest"
       - run:
           name: docker-compose down
           command: docker-compose down
@@ -61,7 +61,7 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
             export AWS_DEFAULT_REGION="us-west-2"
 
-            MY_SECURITY_GROUP="sg-0dd95220d0b64b53a"
+            MY_SECURITY_GROUP="sg-0ebf4a51cb08a4871"
             MY_IP=`curl -f -s ifconfig.me`
 
             trap "aws ec2 revoke-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32" 0 1 2 3 15
