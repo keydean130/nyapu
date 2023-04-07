@@ -70,7 +70,7 @@
                         {% for comment in comments %}
                         <tr class="text">
                         <td class="text-center align-middle">
-                            <a href="{% url 'diary:diary_list' comment.comment_user %}" class="text-decoration-none">
+                            <a href="{% url 'diary:profile' comment.comment_user %}" class="text-decoration-none">
                                 {{ comment.comment_user }}
                             </a>
                         </td>

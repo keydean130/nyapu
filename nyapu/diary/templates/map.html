@@ -22,7 +22,7 @@
             {% csrf_token %}
         </form>
         <button class="btn btn-primary mt-2 mb-2 me-2 col-5" onClick="getgeo()">現在地周辺を探す</button>
-        <a href="{% url 'diary:diary' %}" class="text-center text-decoration-none">
+        <a href="{% url 'diary:home' %}" class="text-center text-decoration-none">
             <button class="btn btn-primary mt-2 mb-2 ms-2 col-5">ホームに戻る</button>
         </a>
     </div>

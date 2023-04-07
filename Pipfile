@@ -14,9 +14,9 @@ django-widget-tweaks = "*"
 selenium = "*"
 django-allauth = "*"
 Pillow = "*"
-coverage = "*"
 torch = "*"
 torchvision = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.9"

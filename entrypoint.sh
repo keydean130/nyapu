@@ -13,5 +13,5 @@ fi
 
 pipenv run python /usr/src/app/nyapu/manage.py flush --no-input
 pipenv run python /usr/src/app/nyapu/manage.py migrate --settings nyapu_pj.settings_dev
-pipenv run python /usr/src/app/nyapu/manage.py loaddata test/test_view
+pipenv run python /usr/src/app/nyapu/manage.py loaddata test/test_data
 exec "$@"

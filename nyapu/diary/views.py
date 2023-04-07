@@ -18,9 +18,10 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-class DiaryView(LoginRequiredMixin, generic.ListView):
+class HomeView(LoginRequiredMixin, generic.ListView):
+    """ホームページ用のViewクラス"""
     model = Diary
-    template_name = 'diary.html'
+    template_name = 'home.html'
     paginate_by = 2
 
     def get_queryset(self):
@@ -36,7 +37,7 @@ class DiaryView(LoginRequiredMixin, generic.ListView):
             )
         return queryset
 
-    def get_context_data(self, **kwargs):  # 追加
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Like処理
         diaries = Diary.objects.all()
@@ -77,6 +78,7 @@ class DiaryView(LoginRequiredMixin, generic.ListView):
 
 
 class InquiryView(generic.FormView):
+    """お問い合わせページ用のViewクラス"""
     template_name = 'inquiry.html'
     form_class = InquiryForm
     success_url = reverse_lazy('diary:diary')
@@ -88,9 +90,10 @@ class InquiryView(generic.FormView):
         return super().form_valid(form)
 
 
-class DiaryListView(LoginRequiredMixin, generic.ListView):
+class ProfileView(LoginRequiredMixin, generic.ListView):
+    """プロフィールページ用のViewクラス"""
     model = Diary
-    template_name = 'diary_list.html'
+    template_name = 'profile.html'
     paginate_by = 6
 
     def get_queryset(self, **kwargs):
@@ -221,7 +224,7 @@ class DiaryCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = DiaryCreateForm
 
     def get_success_url(self):
-        return reverse_lazy('diary:diary_list', kwargs={'username': self.request.user})
+        return reverse_lazy('diary:profile', kwargs={'username': self.request.user})
 
     def form_valid(self, form):
         diary = form.save(commit=False)
@@ -266,7 +269,7 @@ class DiaryDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = 'diary_delete.html'
 
     def get_success_url(self):
-        return reverse_lazy('diary:diary_list', kwargs={'username': self.request.user})
+        return reverse_lazy('diary:profile', kwargs={'username': self.request.user})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}ホーム ｜ にゃっぷ{% endblock %}
+
+{% block contents %}
+<script src="{% static 'js/script.js' %}"></script>
+<style>
+#map {
+    height:30vh;
+}
+</style>
+<div class="container my-div-style">
+    <div class="row mx-auto">
+        <div class="col-sm-8 mt-3 mx-auto">
+            <div class="text-center shadow border">
+                <form id="form_area" action="{% url 'diary:mapping' %}" method="post">
+                    {% csrf_token %}
+                </form>
+                <div id="map" class="border text-center"></div>
+                <button class="btn btn-primary mt-2 mb-2 me-2 col-5" onClick="getgeo()">現在地を取得</button>
+                <a href="{% url 'diary:map' %}" class="text-center text-decoration-none">
+                    <button class="btn btn-primary mt-2 mb-2 ms-2 col-5">全画面表示</button>
+                </a>
+            </div>
+            <div class="border shadow mt-3 mx-auto">
+                <div class="text-center">
+                    <p class="pt-3">
+                        <strong>おすすめの猫</strong>
+                        (投稿した日記の猫の品種に基づく)
+                    </p>
+                </div>
+                <div class="row mx-auto">
+                    {% if some_cat_breed_diary %}
+                    <div class="col-12 mx-auto border shadow mt-3">
+                        <a href="{% url 'diary:profile' some_cat_breed_diary.user %}"
+                           class="text-decoration-none"
+                           name="some_cat_breed_diary_user_{{ some_cat_breed_diary.user }}">
+                            <div class="text-center">
+                                <p class="pt-2">
+                                    <strong>{{ some_cat_breed_diary.user }}</strong>
+                                </p>
+                            </div>
+                        </a>
+                        <a href="{% url 'diary:diary_detail' some_cat_breed_diary.pk %}"
+                           class="text-decoration-none"
+                           name="some_cat_breed_diary_{{ some_cat_breed_diary.pk }}">
+                            <div class="text-center">
+                                {% if some_cat_breed_diary.photo1 %}
+                                <img src="{{ some_cat_breed_diary.photo1.url }}" class="img-clip border"/>
+                                {% endif %}
+                                <p class="pt-2">
+                                    <span>{{ some_cat_breed_diary.title | truncatechars:20 }}</span>
+                                </p>
+                                <p>{{ some_cat_breed_diary.content | truncatechars:20 }}
+                                </p>
+                            </div>
+                        </a>
+                        <p class="post-meta text-end p-sm-2 date-time">{{ some_cat_breed_diary.created_at }}
+                        </p>
+                        <div class="p-sm-2">
+                            <form action="{% url 'diary:like' %}" method="POST" style="display:inline" >
+                                {% csrf_token %}
+                                {% if some_cat_breed_diary.id in liked_list %}
+                                    <button id="like" class="my-btn" name="{{some_cat_breed_diary.id}}" ><i class="fas fa-heart like-red fa-lg" name="{{some_cat_breed_diary.id}}-like-red"></i></button>
+                                {% else %}
+                                    <button id="like" class="my-btn" name="{{some_cat_breed_diary.id}}" ><i class="far fa-heart fa-lg" name="{{some_cat_breed_diary.id}}-like-none"></i></button>
+                                {% endif %}
+                            </form>
+                            <p name="{{some_cat_breed_diary.id}}-count" class="text-start count" style="display:inline" >{{ some_cat_breed_diary.like_set.count }}</p>
+                        </div>
+                        <div class="p-sm-2">
+                             コメント数　{{ some_cat_breed_diary.comment_set.count }}
+                        </div>
+                        <div class="p-sm-2">
+                             # {{ some_cat_breed_diary.photo1_most_similar_breed }}
+                        </div>
+                        {% else %}
+                        <div class="text-center">
+                            <p>おすすめの猫がいません</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="border shadow mt-3">
+                <div class="text-center">
+                    <p class="pt-3">
+                        <strong>近くの猫</strong>
+                        (投稿した日記の位置情報に基づく)
+                    </p>
+                </div>
+                <div class="row mx-auto">
+                    {% if nearest_diary %}
+                    <div class="col-12 mx-auto border shadow mt-3">
+                        <a href="{% url 'diary:profile' nearest_diary.user %}"
+                           class="text-decoration-none"
+                           name="nearest_diary_user_{{ nearest_diary.user }}">
+                            <div class="text-center">
+                                <p class="pt-2">
+                                    <strong>{{ nearest_diary.user }}</strong>
+                                </p>
+                            </div>
+                        </a>
+                        <a href="{% url 'diary:diary_detail' nearest_diary.pk %}"
+                           class="text-decoration-none"
+                           name="nearest_diary_{{ nearest_diary.pk }}">
+                            <div class="text-center">
+                                {% if nearest_diary.photo1 %}
+                                <img src="{{ nearest_diary.photo1.url }}" class="img-clip border"/>
+                                {% endif %}
+                                <p class="pt-2">
+                                    <span>{{ nearest_diary.title | truncatechars:20 }}</span>
+                                </p>
+                                <p>{{ nearest_diary.content | truncatechars:20 }}
+                                </p>
+                            </div>
+                        </a>
+                        <p class="post-meta text-end p-sm-2 date-time">{{ nearest_diary.created_at }}
+                        </p>
+                        <div class="p-sm-2">
+                            <form action="{% url 'diary:like' %}" method="POST" style="display:inline" >
+                                {% csrf_token %}
+                                {% if nearest_diary.id in liked_list %}
+                                    <button id="like" class="my-btn" name="{{nearest_diary.id}}" ><i class="fas fa-heart like-red fa-lg" name="{{nearest_diary.id}}-like-red"></i></button>
+                                {% else %}
+                                    <button id="like" class="my-btn" name="{{nearest_diary.id}}" ><i class="far fa-heart fa-lg" name="{{nearest_diary.id}}-like-none"></i></button>
+                                {% endif %}
+                            </form>
+                            <p name="{{nearest_diary.id}}-count" class="text-start count" style="display:inline" >{{ nearest_diary.like_set.count }}</p>
+                        </div>
+                        <div class="p-sm-2">
+                             コメント数　{{ nearest_diary.comment_set.count }}
+                        </div>
+                        <div class="p-sm-2">
+                             # {{ nearest_diary.photo1_most_similar_breed }}
+                        </div>
+                        {% else %}
+                        <div class="text-center">
+                            <p>近くの猫がいません</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8 mt-3 mx-auto">
+            <div class="col-12 text-center mx-auto h-auto pt-3 shadow border">
+                <div class="text-center">{% include 'search.html' %}
+                </div>
+            </div>
+            <div class="row mx-auto">
+                {% for diary in diary_list %}
+                <div class="col-12 mx-auto border shadow mt-3">
+                    <a href="{% url 'diary:profile' diary.user %}"
+                       class="text-decoration-none"
+                       name="diary_user_{{ diary.user }}">
+                        <div class="text-center">
+                            <p class="pt-2">
+                                <strong>{{ diary.user }}</strong>
+                            </p>
+                        </div>
+                    </a>
+                    <a href="{% url 'diary:diary_detail' diary.pk %}"
+                       class="text-decoration-none"
+                       name="diary_{{ diary.pk }}">
+                        <div class="text-center">
+                            {% if diary.photo1 %}
+                            <img src="{{ diary.photo1.url }}" class="img-clip border"/>
+                            {% endif %}
+                            <p class="pt-2">
+                                <span>{{ diary.title | truncatechars:20 }}</span>
+                            </p>
+                            <p>{{ diary.content | truncatechars:20 }}
+                            </p>
+                        </div>
+                    </a>
+                    <p class="post-meta text-end p-sm-2 date-time">{{ diary.created_at }}
+                    </p>
+                    <div class="p-sm-2">
+                        {% include 'like.html' %}
+                    </div>
+                    <div class="p-sm-2">
+                         コメント数　{{ diary.comment_set.count }}
+                    </div>
+                    <div class="p-sm-2">
+                     # {{ diary.photo1_most_similar_breed }}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 mx-auto border shadow mt-3">
+                    <p class="text-center">日記がありません。</p>
+                </div>
+                {% endfor %}
+                <div class="col-11 text-center mx-auto">
+                    <!-- ページネーション処理　-->
+                    {% if is_paginated %}
+                    <ul class="pagination mt-3">
+                        <!-- 前ページへのリンク　-->
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                     <!-- ページ表示　-->
+                        {% for page_num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == page_num %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="?page={{ page.num }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_num }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                     <!-- 次ページへのリンク　-->
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(event){
+        $(document).on('click', '#like', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'diary:like' %}",
+                data: {
+                    'diary_id': $(this).attr('name'),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                dataType: 'json',
+            }).done(function(response) {
+                selector = document.getElementsByName(response.diary_id);
+                if(response.liked){
+                    $(selector).html("<i class='fas fa-heart like-red' name='" + response.diary_id + "-like-red'></i>");
+                }
+                else {
+                    $(selector).html("<i class='far fa-heart' name='" + response.diary_id + "-like-none'></i>");
+                }
+                selector2 = document.getElementsByName(response.diary_id + "-count");
+                $(selector2).text(response.count);
+            }).fail(function() {
+                alert('いいね処理でエラーが起きました');
+            });
+        });
+    });
+</script>
+<script>
+//マップの表示位置を指定(緯度・経度)
+var map = L.map('map').setView([35.39291572, 139.44288869], 9);
+//地図データはOSMから読み込み
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+//予めグローバル変数として定義しておく
+var marker;
+//マップにマーカーを描画
+function map_draw(map_diaries){
+
+    console.log("マップドロー")
+
+    for (let diary of map_diaries ){
+
+        var myIcon = L.icon({
+            iconUrl: "{% static 'assets/img/nyapu.png' %}",
+            iconSize: [50, 50],  // アイコンサイズ
+            popupAnchor: [0, -20] //ポップアップの位置
+        });
+        //ポップアップする文字（HTML可、ここでは画像を表示）
+        var d_detail = "{% url 'diary:diary_detail' 123456 %}".replace(/123456/,diary["id"]);
+        var sucontents = "<img src=\"" + "{% get_media_prefix %}" + diary["photo1"] + "\" class=\"img-clip border\"/>" + "<br>" + "<button name='diary_d' class=\"btn btn-primary col-12\" type=\"button\" onclick=\"location.href=\'" + d_detail + "\'\">日記を見る</button>";
+
+        //ポップアップオブジェクトを作成
+        var popup1 = L.popup({ maxWidth: 500 }).setContent(sucontents);
+
+        L.marker([diary["lat"], diary["lon"]], {icon: myIcon}).addTo(map).bindPopup(popup1).openPopup();
+    }
+}
+</script>
+{% endblock %}
