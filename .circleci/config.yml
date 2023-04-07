@@ -23,6 +23,13 @@ jobs:
             echo POSTGRES_PASSWORD=${POSTGRES_PASSWORD} >> ./.env.db
             echo POSTGRES_DB=${POSTGRES_DB} >> ./.env.db
       - run:
+          name: Install Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get update
+            sudo apt-get install -y git-lfs openssh-client
+            git lfs pull
+      - run:
           name: Install Docker Compose
           command: |
             curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
