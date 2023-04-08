@@ -76,12 +76,12 @@
                         <div class="p-sm-2">
                              # {{ some_cat_breed_diary.photo1_most_similar_breed }}
                         </div>
-                        {% else %}
-                        <div class="text-center">
-                            <p>おすすめの猫がいません</p>
-                        </div>
-                        {% endif %}
                     </div>
+                    {% else %}
+                    <div class="text-center">
+                        <p>おすすめの猫がいません</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="border shadow mt-3 mx-auto">
@@ -136,12 +136,12 @@
                         <div class="p-sm-2">
                              # {{ nearest_diary.photo1_most_similar_breed }}
                         </div>
-                        {% else %}
-                        <div class="text-center">
-                            <p>近くの猫がいません</p>
-                        </div>
-                        {% endif %}
                     </div>
+                    {% else %}
+                    <div class="text-center">
+                        <p>近くの猫がいません</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
