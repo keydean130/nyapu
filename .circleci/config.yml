@@ -55,7 +55,7 @@ jobs:
       image: ubuntu-2204:2022.04.2
     steps:
       - checkout
-      # CircleCIに登録した秘密鍵を呼び出す。
+      # CircleCIに登録した秘密鍵を呼び出し
       - add_ssh_keys:
           fingerprints:
             - ${KEY_FINGERPRINT}
