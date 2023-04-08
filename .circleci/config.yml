@@ -49,7 +49,7 @@ jobs:
           name: docker-compose down
           command: docker-compose down
 
-  # EC2にSSH接続し、デプロイを実行する
+  # EC2にSSH接続し、デプロイを実行
   deploy:
     machine:
       image: ubuntu-2204:2022.04.2
