@@ -34,7 +34,7 @@ class InquiryForm(forms.Form):
         message = '送信者名:{0}\nメールアドレス:{1}\nメッセージ:\n{2}\n\n上記のお問い合わせを受け付けました。' \
             '内容確認し返信いたしますので、暫くお待ちください。'.format(name, email, message)
         from_email = 'admin@nyapumap.com'
-        to_list = ['nyapumail@gmail.com']
+        to_list = ['nyapumail@outlook.com']
         cc_list = [email]
         message = EmailMessage(subject=subject, body=message, from_email=from_email, to=to_list,
                                cc=cc_list)

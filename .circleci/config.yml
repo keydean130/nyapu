@@ -49,13 +49,13 @@ jobs:
           name: docker-compose down
           command: docker-compose down
 
-  # EC2にSSH接続し、デプロイを実行する
+  # EC2にSSH接続し、デプロイを実行
   deploy:
     machine:
       image: ubuntu-2204:2022.04.2
     steps:
       - checkout
-      # CircleCIに登録した秘密鍵を呼び出す。
+      # CircleCIに登録した秘密鍵を呼び出し
       - add_ssh_keys:
           fingerprints:
             - ${KEY_FINGERPRINT}
@@ -69,28 +69,28 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
             export AWS_DEFAULT_REGION="us-west-2"
 
-            MY_SECURITY_GROUP="sg-0ebf4a51cb08a4871"
+            MY_SECURITY_GROUP="sg-095b92e3b1db4d75c"
             MY_IP=`curl -f -s ifconfig.me`
 
             trap "aws ec2 revoke-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32" 0 1 2 3 15
-            aws ec2 authorize-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32
-            ssh ${USER_NAME}@${HOST_NAME} '
-              source ~/.bash_profile
-              cd ~ &&
+            aws ec2 authorize-security-group-ingress --group-id $MY_SECURITY_GROUP --protocol tcp --port 22 --cidr $MY_IP/32       
+            ssh ${USER_NAME}@${HOST_NAME} "
+              source ~/.bash_profile &&
+              cd ~/nyapu &&
               git pull origin master &&
-              git lfs pull
-              python -m pip install --upgrade pip &&
-              python -m pipenv install --skip-lock &&
+              git lfs pull &&
+              pip install --upgrade pip &&
+              pipenv install --skip-lock &&
               cd ~/nyapu/nyapu &&
-              pipenv run python3 ~/nyapu/nyapu/manage.py migrate &&
-              pipenv run python3 ~/nyapu/nyapu/manage.py collectstatic --noinput &&
+              pipenv run python ~/nyapu/nyapu/manage.py migrate &&
+              pipenv run python ~/nyapu/nyapu/manage.py collectstatic --noinput &&
               pipenv run sudo systemctl reload nginx.service &&
               pipenv run pkill gunicorn &&
               pipenv run gunicorn --bind 127.0.0.1:8000 nyapu_pj.wsgi -D &&
               pipenv run ps -aux | grep gunicorn
-            '
+            "
 
-# テストが成功した場合のみ、deployを実行する。
+# テストが成功した場合のみ、deployを実行。
 workflows:
   version: 2.1
   build_and_deploy:
