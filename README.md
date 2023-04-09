@@ -50,14 +50,14 @@
 
 ## ６、主な使用技術
 - Python 3.9  
- - Django 3.2.14
- - Pytorch
-   - torch
-   - torchvision 
-   - VGG19(事前学習済みモデル)
- - Numpy
- - pytest
- - selenium
+   - Django 3.2.14
+   - Pytorch
+     - torch
+     - torchvision 
+     - VGG19(事前学習済みモデル)
+   - Numpy
+   - pytest
+   - selenium
 - PostgreSQL 13
 - AWS
   - VPC  
