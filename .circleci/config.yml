@@ -11,13 +11,13 @@ jobs:
       - run:
           name: make env file
           command: |
-            echo SECRET_KEY=${SECRET_KEY} >> ./.env
-            echo DATABASE_ENGINE=${DATABASE_ENGINE} >> ./.env
-            echo DATABASE_DB=${DATABASE_DB} >> ./.env
-            echo DATABASE_USER=${DATABASE_USER} >> ./.env
-            echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> ./.env
-            echo DATABASE_HOST=${DATABASE_HOST} >> ./.env
-            echo DATABASE_PROT=${DATABASE_PORT} >> ./.env
+            echo SECRET_KEY=${SECRET_KEY} >> ./django/.env
+            echo DATABASE_ENGINE=${DATABASE_ENGINE} >> ./django/.env
+            echo DATABASE_DB=${DATABASE_DB} >> ./django/.env
+            echo DATABASE_USER=${DATABASE_USER} >> ./django/.env
+            echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> ./django/.env
+            echo DATABASE_HOST=${DATABASE_HOST} >> ./django/.env
+            echo DATABASE_PROT=${DATABASE_PORT} >> ./django/.env
 
             echo POSTGRES_USER=${POSTGRES_USER} >> ./.env.db
             echo POSTGRES_PASSWORD=${POSTGRES_PASSWORD} >> ./.env.db
@@ -44,7 +44,7 @@ jobs:
           command: sleep 30
       - run:
           name: pytest
-          command: docker-compose exec nyapu bash -c "cd nyapu && pipenv run pytest"
+          command: docker-compose exec django bash -c "cd nyapu && pipenv run pytest"
       - run:
           name: docker-compose down
           command: docker-compose down
@@ -62,6 +62,7 @@ jobs:
       - run: sudo pip install awscli           
       - run:
           name: ec2 deploy
+          # Todo npmインストール～追加要る
           command: |
             set -ex
 

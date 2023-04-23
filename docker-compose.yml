@@ -2,23 +2,38 @@ version: '3.7'
 
 services:
     # サービス名は自由に設定
-    nyapu:
-        container_name: nyapu
-        build: .
-        # サービス起動後に入力されるコマンドを設定
-        command: pipenv run python /usr/src/app/nyapu/manage.py runserver 0.0.0.0:8000 --settings nyapu_pj.settings_dev
+    django:
+        container_name: django
+        build:
+            context: django
+            dockerfile: Dockerfile
         # データを永続化させる場合の設定。`host:container`でパスを記載
         volumes:
-            - .:/usr/src/app
+            - ./django:/usr/src/app
         # 指定されたポートは接続されたサービスからアクセス可能
         ports:
             - 8000:8000
         # 環境変数を指定
-        env_file: .env
+        env_file: django/.env
         # 起動するサービスの依存関係を明記
         depends_on:
             - postgres
             - selenium
+
+    vue:
+        container_name: vue
+        build:
+            context: vue
+            dockerfile: Dockerfile
+        # データを永続化させる場合の設定。`host:container`でパスを記載
+        volumes:
+            - ./vue:/usr/src/app
+        # 指定されたポートは接続されたサービスからアクセス可能
+        ports:
+            - 8000:8000
+        # 起動するサービスの依存関係を明記
+        depends_on:
+            - django
 
     postgres:
         container_name: postgres

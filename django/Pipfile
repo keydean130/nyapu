@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+Django = "3.2.14"
+gunicorn = "20.1.0"
+psycopg2-binary = "2.9.5"
+django-ses = "3.3.0"
+django-widget-tweaks = "1.4.12"
+selenium = "4.8.2"
+django-allauth = "0.53.1"
+Pillow = "9.4.0"
+torch = "1.13.1"
+torchvision = "0.14.1"
+pytest-django = "4.5.2"
+djangorestframework = "*"
+
+[requires]
+python_version = "3.9"
+
