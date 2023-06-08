@@ -1,8 +1,8 @@
 # 公式からイメージをpull
 FROM python:3.9-buster
 
-# 作業ディレクトリを設定
-WORKDIR /usr/src/app
+# コンテナの作業ディレクトリを設定
+WORKDIR /usr/src/django
 
 # 環境変数を設定
 # Pythonがpyc filesとdiscへ書き込むことを防ぐ
@@ -17,17 +17,14 @@ RUN apt-get update && apt-get install -y unzip wget vim
 RUN pip install --upgrade pip && \
     pip install pipenv
 
-# ホストのpipfiletをコンテナの作業ディレクトリにコピー
-COPY Pipfile /usr/src/app/Pipfile
+# ホストのdjangoディレクトリを、コンテナにコピー
+COPY ./django /usr/src/django
+
+# ホストのdistディレクトリを、コンテナにコピー
+COPY ./dist /usr/src/dist
 
 # pipfileからパッケージをインストール
 RUN python -m pipenv install
 
-# entrypoint.shをコピー
-COPY entrypoint.sh /usr/src/app/entrypoint.sh
-
-# ホストのカレントディレクトリ（現在はappディレクトリ）を作業ディレクトリにコピー
-COPY .. /usr/src/app
-
 # entrypoint.shを実行
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/django/entrypoint.sh"]

@@ -1,10 +1,26 @@
 # 公式からイメージをpull
-FROM node:16-alpine
+FROM node:18.13.0
 
-# 作業ディレクトリを設定
-WORKDIR /usr/src
+# コンテナの作業ディレクトリを設定
+WORKDIR /usr/src/vue
 
-# 環境変数を設定(理由は謎)
-ENV HOST 0.0.0.0
-# 分からん
-EXPOSE 8080
+# 必要なパッケージのインストール
+RUN apt-get update && apt-get install -y rsync
+
+# ホストのvueディレクトリを、コンテナにコピー
+COPY ./vue /usr/src/vue
+
+# ホストのdistディレクトリを、コンテナにコピー
+COPY ./dist /usr/src/dist
+
+# パッケージマネージャーを設定
+RUN npm install -g npm@8.19.3
+
+# アプリケーションの依存関係をインストール
+RUN npm install axios vuetify@3
+
+# ビルドコマンドを実行（必要に応じて変更）
+RUN npm run build
+
+# コンテナが起動した時に実行されるコマンドを指定（必要に応じて変更）
+# CMD [ "npm", "run", "start" ]

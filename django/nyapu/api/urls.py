@@ -3,10 +3,10 @@ from rest_framework import routers
 
 from . import views
 
-router = routers.SimpleRouter()
+router = routers.DefaultRouter()
 router.register('diaries', views.DiaryViewSet)
 
 app_name = 'api'
 urlpatterns = [
-    path('api/', include(router.urls))
+    path('', include(router.urls))
 ]

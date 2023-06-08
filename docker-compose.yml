@@ -1,18 +1,21 @@
 version: '3.7'
 
 services:
-    # サービス名は自由に設定
+
     django:
         container_name: django
         build:
-            context: django
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: django/Dockerfile
+        command:
+            pipenv run python /usr/src/django/nyapu/manage.py runserver 0.0.0.0:8000 --settings nyapu_pj.settings_dev
         # データを永続化させる場合の設定。`host:container`でパスを記載
         volumes:
-            - ./django:/usr/src/app
+            - ./django/:/usr/src/django
+            - ./dist/:/usr/src/dist
         # 指定されたポートは接続されたサービスからアクセス可能
         ports:
-            - 8000:8000
+            - '8000:8000'
         # 環境変数を指定
         env_file: django/.env
         # 起動するサービスの依存関係を明記
@@ -23,14 +26,15 @@ services:
     vue:
         container_name: vue
         build:
-            context: vue
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: vue/Dockerfile
         # データを永続化させる場合の設定。`host:container`でパスを記載
         volumes:
-            - ./vue:/usr/src/app
+            - ./vue/:/usr/src/vue
+            - ./dist/:/usr/src/dist
         # 指定されたポートは接続されたサービスからアクセス可能
         ports:
-            - 8000:8000
+            - '3000:3000'
         # 起動するサービスの依存関係を明記
         depends_on:
             - django
@@ -44,15 +48,15 @@ services:
             - postgres_data:/var/lib/postgresql/data
         # HeidiSQLの接続用にポート開放
         ports:
-            - 5432:5432
+            - '5432:5432'
         env_file: .env.db
 
     selenium:
         container_name: selenium
         image: selenium/standalone-chrome:4.5.0-20221004
         ports:
-         - 4444:4444
-         - 5900:5900
+         - '4444:4444'
+         - '5900:5900'
         privileged: true
         shm_size: "2gb" 
         volumes:

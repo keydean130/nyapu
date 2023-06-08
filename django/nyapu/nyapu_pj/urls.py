@@ -22,7 +22,7 @@ from . import settings_common, settings_dev
 
 urlpatterns = [
     path('keysite/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='home.html')),
+    path('', TemplateView.as_view(template_name='index.html')),
     path('api/auth/', include('dj_rest_auth.urls')),
     path('api/', include('api.urls')),
     re_path('', RedirectView.as_view(url='/')),
