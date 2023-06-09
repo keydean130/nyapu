@@ -61,7 +61,7 @@ ROOT_URLCONF = 'nyapu_pj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': os.path.join(BASE_DIR, 'templates'),
+        'DIRS': os.path.join(BASE_DIR, 'dist/templates'),
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,7 +134,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 # 静的ファイルの配置場所（collectstaticする時の集約対象。複数ディレクトリ指定可能）
-STATICFILES_DIRS = os.path.join(BASE_DIR, '../dist/static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dist/static'),]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

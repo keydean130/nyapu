@@ -17,14 +17,15 @@ RUN apt-get update && apt-get install -y unzip wget vim
 RUN pip install --upgrade pip && \
     pip install pipenv
 
+# pipfileからパッケージをインストール(Pipfile.lockに変更がなければキャッシュが使用される)
+COPY ./django/Pipfile* /usr/src/django/
+RUN python -m pipenv install --deploy --ignore-pipfile
+
 # ホストのdjangoディレクトリを、コンテナにコピー
 COPY ./django /usr/src/django
 
 # ホストのdistディレクトリを、コンテナにコピー
 COPY ./dist /usr/src/dist
-
-# pipfileからパッケージをインストール
-RUN python -m pipenv install
 
 # entrypoint.shを実行
 ENTRYPOINT ["/usr/src/django/entrypoint.sh"]
