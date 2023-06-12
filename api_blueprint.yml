@@ -1,0 +1,221 @@
+openapi: 3.0.3
+# Todo パラメータとレスポンス（エラー含め）の詳細を書く
+
+info:
+  title: Nyapu API
+  version: 1.0.0
+
+paths:
+  /api-auth/login/:
+    post:
+      summary: JWTトークンを取得
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api-auth/token/refresh/:
+    post:
+      summary: JWTトークンを再取得
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api-auth/token/verify/:
+    post:
+      summary: JWTトークンを検証
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/diaries/:
+    get:
+      summary: 日記の一覧を全取得
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+    post:
+      summary: 日記を作成
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/diaries/?profile={user_id}:
+    get:
+      summary: ユーザーが投稿した日記を取得
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 成功時のレスポンス
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/diaries/?liked_diaries={user_id}:
+    get:
+      summary: ユーザーがいいねした日記を取得
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/diaries/?recent_diaries={user_id}:
+    get:
+      summary: ユーザーが直近に投稿した日記の、猫の品種に基づくおすすめの日記を取得
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/diaries/?nearest_diaries={user_id}:
+    get:
+      summary: ユーザーが直近に投稿した日記の、近所の日記を取得
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/diaries/{pk}/:
+    get:
+      summary: 日記の詳細を取得
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+    put:
+      summary: 日記を更新
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+    delete:
+      summary: 日記を削除
+      parameters:
+        - name: pk
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/inquiry/:
+    post:
+      summary: 問い合わせ
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/followers/:
+    get:
+      summary: フォローされているユーザーを取得
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+
+  /api/followings/:
+    get:
+      summary: フォローしているユーザーを取得
+      responses:
+        "200":
+          description: 成功
