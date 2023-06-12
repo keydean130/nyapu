@@ -83,4 +83,3 @@ APPEND_SLASH = False
 
 # サインアップにメールアドレス確認をはさむように設定
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-

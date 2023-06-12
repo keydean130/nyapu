@@ -1,40 +1,31 @@
 from django_filters import rest_framework as filters
-from .models import Diary, Comment, Like
+from diary.models import Diary, Like
 import numpy as np
 
 
 class MyDiariesFilter(filters.FilterSet):
     """ログインユーザーが投稿した日記をフィルタ―するクラス"""
 
+    profile = filters.NumberFilter(field_name='user_id', lookup_expr='exact')
+
     class Meta:
         model = Diary
-        fields = []
-
-    def filter_queryset(self, queryset):
-        # ログインユーザのID取得
-        user_id = self.request.user.id
-        # クエリセットのフィルタリングロジック
-        queryset = super().filter_queryset(queryset)
-        # ログインユーザのIDを使用して追加のフィルタリングを行う
-        queryset = queryset.filter(user_id=user_id)
-        return queryset
+        fields = ['profile']
 
 
 class LikedDiariesFilter(filters.FilterSet):
     """ログインユーザーがいいねした日記をフィルタ―するクラス"""
 
+    liked_diaries = filters.NumberFilter(field_name='user_id', method='get_queryset')
+
     class Meta:
         model = Diary
-        fields = '__all__'
+        fields = ['liked_diaries']
 
-    def filter_queryset(self, queryset):
-        # ログインユーザのID取得
-        user_id = self.request.user.id
-        # クエリセットのフィルタリングロジック
-        queryset = super().filter_queryset(queryset)
+    def get_queryset(self, queryset, name, value):
         # Like済みの日記のidをliked_diariesとして取得
-        liked_diaries = (Like.objects.filter(like_user=user_id)).values_list('diary_id')
-        # Like済みの日記のオブジェクトをquerysetに格納
+        liked_diaries = (Like.objects.filter(like_user__id=value)).values_list('diary_id')
+        # Like済みの日記のオブジェクトをlike_diary_listに格納
         queryset = queryset.filter(id__in=liked_diaries)
         return queryset
 
@@ -42,48 +33,43 @@ class LikedDiariesFilter(filters.FilterSet):
 class RecentDiariesFilter(filters.FilterSet):
     """おすすめの日記をフィルタ―するクラス"""
 
+    recent_diaries = filters.NumberFilter(field_name='user_id', method='get_queryset')
+
     class Meta:
         model = Diary
-        fields = '__all__'
+        fields = ['recent_diaries']
 
-    def filter_queryset(self, queryset):
-        # ログインユーザのID取得
-        user_id = self.request.user.id
-        # クエリセットのフィルタリングロジック
-        queryset = super().filter_queryset(queryset)
+    def get_queryset(self, queryset, name, value):
         # ユーザーが直近で更新した日記のオブジェクトを取得
-        recent_diary = queryset.filter(user=user_id).order_by('-updated_at')[0]
+        recent_diary = queryset.filter(user__id=value).order_by('-updated_at').first()
         # ユーザが直近で更新した日記の猫の品種を取得
         cat_breed = recent_diary.photo1_most_similar_breed
         # ユーザが直近で更新した日記の猫の品種と同じ、他のユーザが直近で更新した日記があれば
-        if queryset.filter(photo1_most_similar_breed=cat_breed).exclude(
-                user=self.request.user):
+        if queryset.filter(photo1_most_similar_breed=cat_breed).exclude(user__id=value):
             # ユーザが直近で更新した日記の猫の品種と同じ、他のユーザが直近で更新した日記を取得
             queryset = queryset.filter(photo1_most_similar_breed=cat_breed).exclude(
-                user=self.request.user).order_by('-updated_at')[0]
+                user__id=value).order_by('-updated_at').first()
         return queryset
-
 
 
 class NearestDiariesFilter(filters.FilterSet):
     """近所の日記をフィルタ―するクラス"""
 
+    nearest_diaries = filters.NumberFilter(field_name='user_id',  method='get_queryset')
+
     class Meta:
         model = Diary
-        fields = '__all__'
+        fields = ['nearest_diaries']
 
-    def filter_queryset(self, queryset):
-        # ログインユーザのID取得
-        user_id = self.request.user.id
-        # クエリセットのフィルタリングロジック
-        queryset = super().filter_queryset(queryset)
+    def get_queryset(self, queryset, name, value):
         # ユーザーが直近で更新した日記のオブジェクトを取得
-        recent_diary = queryset.filter(user=user_id).order_by('-updated_at')[0]
+        recent_diary = queryset.filter(user__id=value).order_by('-updated_at').first()
         # 他のユーザが直近で更新した日記、最大100件を取得
         other_user_recent_updated_diaries = queryset.exclude(
-            user=self.request.user).order_by('-updated_at')[0:99]
+            user__id=value).order_by('-updated_at')[0:99]
         # ユーザが直近で更新した日記の、最寄りの日記を取得
-        queryset = self.nearest_diary(recent_diary, other_user_recent_updated_diaries)
+        diary = self.nearest_diary(recent_diary, other_user_recent_updated_diaries)
+        queryset = queryset.filter(id=diary.id)
         return queryset
 
     def nearest_diary(self, diary, diaries):

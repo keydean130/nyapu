@@ -19,7 +19,7 @@ RUN pip install --upgrade pip && \
 
 # pipfileからパッケージをインストール(Pipfile.lockに変更がなければキャッシュが使用される)
 COPY ./django/Pipfile* /usr/src/django/
-RUN python -m pipenv install --deploy --ignore-pipfile
+RUN python -m pipenv install --dev --ignore-pipfile
 
 # ホストのdjangoディレクトリを、コンテナにコピー
 COPY ./django /usr/src/django

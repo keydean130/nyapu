@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'dj_rest_auth',
     'api.apps.ApiConfig',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'nyapu_pj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': os.path.join(BASE_DIR, 'dist/templates'),
+        'DIRS': ['/usr/src/dist/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,7 +135,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 # 静的ファイルの配置場所（collectstaticする時の集約対象。複数ディレクトリ指定可能）
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dist/static'),]
+STATICFILES_DIRS = ['/usr/src/dist/static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -185,9 +186,12 @@ NUM_SAVED_BACKUP = 30
 
 # DRF
 REST_FRAMEWORK = {
-    'DEFAULT＿AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JSTAuthentication',
-    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+        ],
 }
 
 # dj_rest_auth
@@ -198,5 +202,3 @@ SIMPlE_JWT = {
     'AUTH_HEADER_TYPE': ('JWT', ),
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
 }
-
-

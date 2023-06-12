@@ -15,20 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.staticfiles.urls import static
-from django.urls import path, include, re_path
-from django.views.generic import RedirectView, TemplateView
+from django.urls import path, include
+from django.views.generic import TemplateView
 
 from . import settings_common, settings_dev
 
 urlpatterns = [
     path('keysite/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html')),
-    path('api/auth/', include('dj_rest_auth.urls')),
+    path('api-auth/', include('dj_rest_auth.urls')),
     path('api/', include('api.urls')),
-    re_path('', RedirectView.as_view(url='/')),
-    # path('diary/', include('diary.urls')),
-    # path('accounts/', include('allauth.urls')),
-    # path('accounts/', include('accounts.urls')),
+    # re_path('', RedirectView.as_view(url='/')),
+    path('api/', include('diary.urls')),
+    path('api/', include('allauth.urls')),
+    path('api/', include('accounts.urls')),
 ]
 
 # 開発サーバでメディアを配信できるようにする設定
