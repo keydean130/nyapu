@@ -23,7 +23,7 @@ class InquerySerializer(serializers.ModelSerializer):
     name = serializers.CharField(label='お名前', max_length=30)
     email = serializers.EmailField(label='メールアドレス')
     title = serializers.CharField(label='タイトル', max_length=30)
-    message = serializers.CharField(label='メッセージ', widget=serializers.Textarea)
+    message = serializers.CharField(label='メッセージ', style={'widget': 'textarea'})
 
     def send_email(self):
         name = self.validated_data['name']

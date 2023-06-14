@@ -8,7 +8,7 @@ class CustomUsersFilter(filters.FilterSet):
 
     class Meta:
         model = CustomUser
-        field = ['query']
+        fields = ['query']
 
     def user_search(self, queryset, name, value):
         """カスタムユーザー検索用メソッド"""
