@@ -9,6 +9,5 @@ router.register('follows', views.RelationshipViewSet, basename='follow')
 
 urlpatterns = [
    path('', include(router.urls)),
-   # path('edit_profile/', views.ProfileEditView.as_view(), name="edit_profile"),
-   # path('userlist/', views.UserListView.as_view(), name="userlist"),
+   path('inquiry/', views.InquiryCreateAPIView.as_view(), name='inquiry'),
 ]

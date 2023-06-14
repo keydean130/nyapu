@@ -3,6 +3,23 @@ from diary.models import Diary, Like
 import numpy as np
 
 
+class DiariesFilter(filters.FilterSet):
+    """日記を文字列検索するクラス"""
+
+    query = filters.CharFilter(field_name='query', method='user_search')
+
+    class Meta:
+        model = Diary
+        field = ['query']
+
+    def user_search(self, queryset, name, value):
+        """日記検索用メソッド"""
+        return queryset.filter(
+            filters.Q(title__icontains=value) |
+            filters.Q(content__icontains=value)
+        )
+
+
 class MyDiariesFilter(filters.FilterSet):
     """ログインユーザーが投稿した日記をフィルタ―するクラス"""
 

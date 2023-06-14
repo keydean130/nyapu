@@ -1,10 +1,13 @@
 import logging
 
-from accounts.filters import FollowersFilter, FollowingsFilter
+from accounts.filters import (CustomUsersFilter, FollowersFilter,
+                              FollowingsFilter)
 from accounts.models import CustomUser, Relationship
-from accounts.serializers import CustomUserSerializer, RelationshipSerializer
+from accounts.serializers import (CustomUserSerializer, InquerySerializer,
+                                  RelationshipSerializer)
 from django_filters import rest_framework as filters
-from rest_framework import viewsets
+from rest_framework import generics, status, viewsets
+from rest_framework.response import Response
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +16,9 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     """カスタムユーザーモデルのCRUD用のAPIクラス"""
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = CustomUsersFilter
+
 
 class RelationshipViewSet(viewsets.ModelViewSet):
     """フォローモデルのCRUD用のAPIクラス"""
@@ -44,44 +50,15 @@ class RelationshipViewSet(viewsets.ModelViewSet):
         return filterset_classes
 
 
-#
-# class ProfileEditView(LoginRequiredMixin, UpdateView):
-#     template_name = 'account/edit_profile.html'
-#     model = CustomUser
-#     form_class = ProfileForm
-#     success_url = '/accounts/edit_profile/'
-#
-#     def get_object(self):
-#         return self.request.user
-#
-#
-# class UserListView(LoginRequiredMixin, ListView):
-#     template_name = 'account/userlist.html'
-#     model = CustomUser
-#     paginate_by = 9
-#
-#     def get_queryset(self):
-#         alluser_list = CustomUser.objects.all().exclude(id=self.request.user.id)
-#         # 検索機能
-#         query = self.request.GET.get('query')
-#         # usernameとprofileから文字列検索する
-#         if query:
-#             alluser_list = alluser_list.filter(
-#                 Q(username__icontains=query)|Q(profile__icontains=query)
-#             )
-#         return alluser_list
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # ログインユーザ以外のユーザのオブジェクトを取得
-#         alluser_list = CustomUser.objects.all().exclude(id=self.request.user.id)
-#         # フォローしているユーザのidをfollowed_listに格納
-#         followed_list = []
-#         for item in alluser_list:
-#             followed = Relationship.objects.filter(following=item.id, follower=self.request.user)
-#             if followed.exists():
-#                 followed_list.append(item.id)
-#         context['followed_list'] = followed_list
-#         return context
-#
-#
+class InquiryCreateAPIView(generics.CreateAPIView):
+    """お問い合わせページ用のViewクラス"""
+    serializer_class = InquerySerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response({'message': 'メッセージを送信しました。'}, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        serializer.send_email()

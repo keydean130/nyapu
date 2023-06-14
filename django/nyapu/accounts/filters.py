@@ -1,6 +1,21 @@
 from django_filters import rest_framework as filters
 from accounts.models import CustomUser, Relationship
-import numpy as np
+
+
+class CustomUsersFilter(filters.FilterSet):
+    """カスタムユーザーを文字列検索するクラス"""
+    query = filters.CharFilter(field_name='query', method='user_search')
+
+    class Meta:
+        model = CustomUser
+        field = ['query']
+
+    def user_search(self, queryset, name, value):
+        """カスタムユーザー検索用メソッド"""
+        return queryset.filter(
+            filters.Q(username__icontains=value) |
+            filters.Q(profile__icontains=value)
+        )
 
 
 class FollowersFilter(filters.FilterSet):

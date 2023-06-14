@@ -44,15 +44,52 @@ paths:
 
   /api/diaries/:
     get:
-      summary: 日記の一覧を全取得
+      summary: 日記の一覧を取得
+      parameters:
+        - in: query
+          name: query
+          description: 文字列にタイトル or 本文が部分一致する日記を取得
+          required: true
+          schema:
+            type: string
+            example: "猫"
+        - in: query
+          name: profile
+          description: ユーザーのIDから、ユーザーが投稿した日記を取得
+          required: true
+          schema:
+            type: integer
+            example: 100
+        - in: query
+          name: liked_diaries
+          description: ユーザーのIDから、ユーザーがいいねした日記を取得
+          required: true
+          schema:
+            type: integer
+            example: 100
+        - in: query
+          name: recent_diaries
+          description: ユーザーのIDから、ユーザーが直近に投稿した日記の、猫の品種に基づくおすすめの日記を取得
+          required: true
+          schema:
+            type: integer
+            example: 100
+        - in: query
+          name: nearest_diaries
+          description: ユーザーのIDから、ユーザーが直近に投稿した日記の、近所の日記を取得
+          required: true
+          schema:
+            type: integer
+            example: 100
       responses:
         "200":
           description: 成功
           content:
             application/json:
               schema:
-                type: string
-                example: ""
+                type: array
+                items:
+                  type: string
     post:
       summary: 日記を作成
       responses:
@@ -61,80 +98,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: ""
-
-  /api/diaries/?profile={user_id}:
-    get:
-      summary: ユーザーが投稿した日記を取得
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: 成功時のレスポンス
-          content:
-            application/json:
-              schema:
-                type: string
-                example: ""
-
-  /api/diaries/?liked_diaries={user_id}:
-    get:
-      summary: ユーザーがいいねした日記を取得
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: 成功
-          content:
-            application/json:
-              schema:
-                type: string
-                example: ""
-
-  /api/diaries/?recent_diaries={user_id}:
-    get:
-      summary: ユーザーが直近に投稿した日記の、猫の品種に基づくおすすめの日記を取得
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: 成功
-          content:
-            application/json:
-              schema:
-                type: string
-                example: ""
-
-  /api/diaries/?nearest_diaries={user_id}:
-    get:
-      summary: ユーザーが直近に投稿した日記の、近所の日記を取得
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: 成功
-          content:
-            application/json:
-              schema:
-                type: string
-                example: ""
+                type: array
+                items:
+                  type: string
 
   /api/diaries/{pk}/:
     get:
@@ -152,8 +118,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: ""
+                type: array
+                items:
+                  type: string
     put:
       summary: 日記を更新
       parameters:
@@ -169,8 +136,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: ""
+                type: array
+                items:
+                  type: string
     delete:
       summary: 日記を削除
       parameters:
@@ -186,39 +154,58 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: ""
+                type: array
+                items:
+                  type: string
 
-  /api/follows/?followers={user_id}/:
+  /api/accounts/:
     get:
-      summary: ログインユーザをフォローしているユーザーを取得
+      summary: ユーザーリストを取得
       parameters:
-        - name: user_id
-          in: path
+        - in: path
+          name: query
+          description: 文字列にユーザ―名 or プロフィールが部分一致するユーザーを取得
+          required: true
+          schema:
+            type: string
+            example: "タロウ"
+      response: 
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /api/follows/:
+    get:
+      summary: ユーザーのfollower、followingの取得
+      parameters:
+        - in: query
+          name: followers
+          description: ユーザーのID
           required: true
           schema:
             type: integer
+            example: 100
+        - in: query
+          name: followings
+          description: ユーザーのID
+          required: true
+          schema:
+            type: integer
+            example: 100
       responses:
         "200":
           description: 成功
           content:
             application/json:
               schema:
-                type: string
-                example: ""
-
-  /api/follows/?followings={user_id}/:
-    get:
-      summary: ログインユーザがフォローしているユーザーを取得
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: 成功
+                type: array
+                items:
+                  type: string
 
   /api/inquiry/:
     post:
@@ -229,5 +216,6 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: ""
+                type: array
+                items:
+                  type: string

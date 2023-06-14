@@ -1,5 +1,6 @@
 import logging
-from diary.filters import (LikedDiariesFilter, MyDiariesFilter,
+
+from diary.filters import (DiariesFilter, LikedDiariesFilter, MyDiariesFilter,
                            NearestDiariesFilter, RecentDiariesFilter)
 from diary.models import Diary
 from diary.predictors import Predictor
@@ -30,6 +31,9 @@ class DiaryViewSet(viewsets.ModelViewSet):
     def get_filterset_classes(self):
         """URLパラメータによって使用するfiletersetクラスを決める（複数可）"""
         filterset_classes = []
+        # 日記の文字列検索の場合
+        if 'query' in self.request.GET:
+            filterset_classes.append(DiariesFilter)
         # プロフィール（自分が投稿した日記）の場合
         if 'profile' in self.request.GET:
             filterset_classes.append(MyDiariesFilter)
@@ -61,6 +65,7 @@ class DiaryViewSet(viewsets.ModelViewSet):
         # 日記を保存
         diary.save()
         return Response(serializer.data)
+    
 
 # class HomeView(LoginRequiredMixin, generic.ListView):
 #     """ホームページ用のViewクラス"""
@@ -96,92 +101,42 @@ class DiaryViewSet(viewsets.ModelViewSet):
 #             context['count'] = diary.comment_set.count()
 #         # マップ表示用に日記データをmap_diariesに格納   
 #         context['map_diaries'] = Diary.objects.all()
-#         # おすすめ日記の設定
-#         # ユーザと他のユーザが日記をそれぞれ1件以上投稿していれば
-#         if all([Diary.objects.exclude(user=self.request.user),
-#                 Diary.objects.filter(user=self.request.user)]):
-#             # ユーザーが直近で更新した日記のオブジェクトを取得
-#             recent_diary = Diary.objects.filter(user=self.request.user).order_by('-updated_at')[0]
-#             # ユーザが直近で更新した日記の猫の品種を取得
-#             cat_breed = recent_diary.photo1_most_similar_breed
-#             # ユーザが直近で更新した日記の猫の品種と同じ、他のユーザが直近で更新した日記があれば
-#             if diaries.filter(photo1_most_similar_breed=cat_breed).exclude(
-#                     user=self.request.user):
-#                 # ユーザが直近で更新した日記の猫の品種と同じ、他のユーザが直近で更新した日記を取得
-#                 context['some_cat_breed_diary'] \
-#                     = diaries.filter(photo1_most_similar_breed=cat_breed).exclude(
-#                     user=self.request.user).order_by('-updated_at')[0]
-
-#             # 他のユーザが直近で更新した日記、最大100件を取得
-#             other_user_recent_updated_diaries = Diary.objects.exclude(
-#                 user=self.request.user).order_by('-updated_at')[0:99]
-#             # ユーザが直近で更新した日記の、最寄りの日記を取得
-#             context['nearest_diary'] \
-#                 = nearest_diary(recent_diary, other_user_recent_updated_diaries)
 #         return context
 
 
-# class InquiryView(generic.FormView):
-#     """お問い合わせページ用のViewクラス"""
-#     template_name = 'inquiry.html'
-#     form_class = InquiryForm
-#     success_url = reverse_lazy('diary:diary')
+class ProfileView(LoginRequiredMixin, generic.ListView):
+    """プロフィールページ用のViewクラス"""
+    model = Diary
+    template_name = 'profile.html'
+    paginate_by = 6
 
-#     def form_valid(self, form):
-#         form.send_email()
-#         messages.success(self.request, 'メッセージを送信しました。')
-#         logger.info('Inquiry sent by {}'.format(form.cleaned_data['name']))
-#         return super().form_valid(form)
+    def get_queryset(self, **kwargs):
+        # ユーザをURLの文字列から取得する
+        user_addr = CustomUser.objects.get(username=self.kwargs['username'])
+        # ユーザの日記のオブジェクトをdiariesへ格納
+        diaries = Diary.objects.filter(user=user_addr).order_by('-created_at')
+        return diaries
 
-
-# class ProfileView(LoginRequiredMixin, generic.ListView):
-#     """プロフィールページ用のViewクラス"""
-#     model = Diary
-#     template_name = 'profile.html'
-#     paginate_by = 6
-
-#     def get_queryset(self, **kwargs):
-#         # ユーザをURLの文字列から取得する
-#         user_addr = CustomUser.objects.get(username=self.kwargs['username'])
-#         # ユーザの日記のオブジェクトをdiariesへ格納
-#         diaries = Diary.objects.filter(user=user_addr).order_by('-created_at')
-#         return diaries
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # ユーザをURLの文字列から取得
-#         user_addr = CustomUser.objects.get(username=self.kwargs['username'])
-#         context['user_addr'] = user_addr
-#         # ユーザの投稿数をmy_diary_countへ格納
-#         context['my_diary_count'] = Diary.objects.filter(user=user_addr).count()
-#         # フォローしているユーザのオブジェクトリストをfollowing_listとして格納
-#         context['following_list'] = Relationship.objects.filter(follower_id=user_addr.id)
-#         # フォローしているユーザのidリストをfollowingsとして取得
-#         followings = (Relationship.objects.filter(follower_id=user_addr.id)).values_list(
-#             'following_id')
-#         # フォローしているユーザの数をfollowing_countに格納
-#         context['following_count'] = CustomUser.objects.filter(id__in=followings).count()
-#         # フォロワーのidリストをfollowersとして取得
-#         followers = (Relationship.objects.filter(following_id=user_addr.id)).values_list(
-#             'follower_id')
-#         # フォロワーの数をfollower_countに格納
-#         context['follower_count'] = CustomUser.objects.filter(id__in=followers).count()
-#         return context
-
-
-# class LikeDiaryListView(LoginRequiredMixin, generic.ListView):
-#     model = Diary
-#     template_name = 'like_diary_list.html'
-#     paginate_by = 9
-
-#     def get_queryset(self, **kwargs):
-#         # ユーザをURLの文字列から取得する
-#         user_addr = CustomUser.objects.get(username=self.kwargs['username'])
-#         # Like済みの日記のidをliked_diariesとして取得
-#         liked_diaries = (Like.objects.filter(like_user=user_addr)).values_list('diary_id')
-#         # Like済みの日記のオブジェクトをlike_diary_listに格納
-#         like_diary_list = Diary.objects.filter(id__in=liked_diaries)
-#         return like_diary_list
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # ユーザをURLの文字列から取得
+        user_addr = CustomUser.objects.get(username=self.kwargs['username'])
+        context['user_addr'] = user_addr
+        # ユーザの投稿数をmy_diary_countへ格納
+        context['my_diary_count'] = Diary.objects.filter(user=user_addr).count()
+        # フォローしているユーザのオブジェクトリストをfollowing_listとして格納
+        context['following_list'] = Relationship.objects.filter(follower_id=user_addr.id)
+        # フォローしているユーザのidリストをfollowingsとして取得
+        followings = (Relationship.objects.filter(follower_id=user_addr.id)).values_list(
+            'following_id')
+        # フォローしているユーザの数をfollowing_countに格納
+        context['following_count'] = CustomUser.objects.filter(id__in=followings).count()
+        # フォロワーのidリストをfollowersとして取得
+        followers = (Relationship.objects.filter(following_id=user_addr.id)).values_list(
+            'follower_id')
+        # フォロワーの数をfollower_countに格納
+        context['follower_count'] = CustomUser.objects.filter(id__in=followers).count()
+        return context
 
 
 # class FollowersView(LoginRequiredMixin, generic.ListView):
@@ -240,72 +195,6 @@ class DiaryViewSet(viewsets.ModelViewSet):
 #                 followed_list.append(item.id)
 #         context['followed_list'] = followed_list
 #         return context
-
-
-# class DiaryDetailView(LoginRequiredMixin, generic.DetailView):
-#     model = Diary
-#     template_name = 'diary_detail.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # Like処理
-#         diaries = Diary.objects.all()
-#         liked_list = []
-#         # Like済みの日記のidをliked_listに格納
-#         for diary in diaries:
-#             liked = diary.like_set.filter(like_user=self.request.user)
-#             if liked.exists():
-#                 liked_list.append(diary.id)
-#         context['liked_list'] = liked_list
-#         # 日記のコメントのオブジェクトをcommentsに格納
-#         context['comments'] = Comment.objects.filter(diary_id=self.kwargs['pk'])
-#         return context
-
-
-# class DiaryCreateView(LoginRequiredMixin, generic.CreateView):
-#     model = Diary
-#     template_name = 'diary_create.html'
-#     form_class = DiaryCreateForm
-
-#     def get_success_url(self):
-#         return reverse_lazy('diary:profile', kwargs={'username': self.request.user})
-
-#     def form_valid(self, form):
-#         diary = form.save(commit=False)
-#         # 画像分類の処理
-#         pred = Predictor()
-#         diary = pred.predict(diary, 3)
-#         diary.user = self.request.user
-#         diary.save()
-#         messages.success(self.request, '日記を作成しました。')
-#         return super().form_valid(form)
-
-#     def form_invalid(self, form):
-#         messages.error(self.request, '日記の作成に失敗しました。')
-#         return super().form_invalid(form)
-
-
-# class DiaryUpdateView(LoginRequiredMixin, generic.UpdateView):
-#     model = Diary
-#     template_name = 'diary_update.html'
-#     form_class = DiaryCreateForm
-
-#     def get_success_url(self):
-#         return reverse_lazy('diary:diary_detail', kwargs={'pk': self.kwargs['pk']})
-
-#     def form_valid(self, form):
-#         diary = form.save(commit=False)
-#         # 画像分類の処理
-#         pred = Predictor()
-#         diary = pred.predict(diary, 3)
-#         diary.user = self.request.user
-#         diary.save()
-#         messages.success(self.request, '日記を更新しました。')
-#         return super().form_valid(form)
-
-#     def form_invalid(self, form):
-#         messages.error(self.request, '日記の更新に失敗しました。')
-#         return super().form_invalid(form)
 
 
 # class DiaryDeleteView(LoginRequiredMixin, generic.DeleteView):
