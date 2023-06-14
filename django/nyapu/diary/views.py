@@ -2,9 +2,11 @@ import logging
 from diary.filters import (LikedDiariesFilter, MyDiariesFilter,
                            NearestDiariesFilter, RecentDiariesFilter)
 from diary.models import Diary
+from diary.predictors import Predictor
 from diary.serializers import DiarySerializer
 from django_filters import rest_framework as filters
 from rest_framework import viewsets
+from rest_framework.response import Response
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +43,24 @@ class DiaryViewSet(viewsets.ModelViewSet):
         elif 'nearest_diaries' in self.request.GET:
             filterset_classes.append(NearestDiariesFilter)
         return filterset_classes
+
+    def perform_create(self, serializer):
+        """日記を新規作成するときの追加処理"""
+        diary = serializer.save()
+        # 日記の画像から、猫の品種を推論する
+        diary = Predictor().predict(diary)
+        # 日記を保存
+        diary.save()
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        """日記を更新するときの追加処理"""
+        diary = serializer.save()
+        # 日記の画像から、猫の品種を推論する
+        diary = Predictor().predict(diary)
+        # 日記を保存
+        diary.save()
+        return Response(serializer.data)
 
 # class HomeView(LoginRequiredMixin, generic.ListView):
 #     """ホームページ用のViewクラス"""

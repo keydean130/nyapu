@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from .predictor import Predictor
+from diary.predictors import Predictor
 
 
 class DiaryConfig(AppConfig):
