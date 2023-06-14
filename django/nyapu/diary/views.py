@@ -103,42 +103,6 @@ class DiaryViewSet(viewsets.ModelViewSet):
 #         context['map_diaries'] = Diary.objects.all()
 #         return context
 
-
-class ProfileView(LoginRequiredMixin, generic.ListView):
-    """プロフィールページ用のViewクラス"""
-    model = Diary
-    template_name = 'profile.html'
-    paginate_by = 6
-
-    def get_queryset(self, **kwargs):
-        # ユーザをURLの文字列から取得する
-        user_addr = CustomUser.objects.get(username=self.kwargs['username'])
-        # ユーザの日記のオブジェクトをdiariesへ格納
-        diaries = Diary.objects.filter(user=user_addr).order_by('-created_at')
-        return diaries
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # ユーザをURLの文字列から取得
-        user_addr = CustomUser.objects.get(username=self.kwargs['username'])
-        context['user_addr'] = user_addr
-        # ユーザの投稿数をmy_diary_countへ格納
-        context['my_diary_count'] = Diary.objects.filter(user=user_addr).count()
-        # フォローしているユーザのオブジェクトリストをfollowing_listとして格納
-        context['following_list'] = Relationship.objects.filter(follower_id=user_addr.id)
-        # フォローしているユーザのidリストをfollowingsとして取得
-        followings = (Relationship.objects.filter(follower_id=user_addr.id)).values_list(
-            'following_id')
-        # フォローしているユーザの数をfollowing_countに格納
-        context['following_count'] = CustomUser.objects.filter(id__in=followings).count()
-        # フォロワーのidリストをfollowersとして取得
-        followers = (Relationship.objects.filter(following_id=user_addr.id)).values_list(
-            'follower_id')
-        # フォロワーの数をfollower_countに格納
-        context['follower_count'] = CustomUser.objects.filter(id__in=followers).count()
-        return context
-
-
 # class FollowersView(LoginRequiredMixin, generic.ListView):
 #     model = CustomUser
 #     template_name = 'followers.html'

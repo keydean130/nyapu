@@ -4,7 +4,7 @@ from accounts.models import CustomUser, Relationship
 
 class CustomUsersFilter(filters.FilterSet):
     """カスタムユーザーを文字列検索するクラス"""
-    query = filters.CharFilter(field_name='query', method='user_search')
+    query = filters.CharFilter(method='user_search')
 
     class Meta:
         model = CustomUser

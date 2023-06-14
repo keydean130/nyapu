@@ -6,11 +6,11 @@ import numpy as np
 class DiariesFilter(filters.FilterSet):
     """日記を文字列検索するクラス"""
 
-    query = filters.CharFilter(field_name='query', method='user_search')
+    query = filters.CharFilter(method='user_search')
 
     class Meta:
         model = Diary
-        field = ['query']
+        fields = ['query']
 
     def user_search(self, queryset, name, value):
         """日記検索用メソッド"""
