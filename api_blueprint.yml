@@ -92,6 +92,31 @@ paths:
                   type: string
     post:
       summary: 日記を作成
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                photo1: 
+                  type: string
+                  format: binary
+                  description: image file
+                photo2:
+                  type: string
+                  format: binary
+                  description: image file
+                photo3:
+                  type: string
+                  format: binary
+                  description: image file
+              required:
+                - photo1
       responses:
         "200":
           description: 成功
@@ -130,6 +155,31 @@ paths:
           schema:
             type: integer
             format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                photo1: 
+                  type: string
+                  format: binary
+                  description: image file
+                photo2:
+                  type: string
+                  format: binary
+                  description: image file
+                photo3:
+                  type: string
+                  format: binary
+                  description: image file
+              required:
+                - photo1
       responses:
         "200":
           description: 成功
@@ -206,10 +256,46 @@ paths:
                 type: array
                 items:
                   type: string
+    post:
+      summary: フォローする
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                follower:
+                  type: integer
+                following:
+                  type: integer
+              required:
+                - follower
+                - following
 
   /api/inquiry/:
     post:
-      summary: 問い合わせ
+      summary: 問い合わせフォーム
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                title: 
+                  type: string
+                massage:
+                  type: string
+              required:
+                - name
+                - email
+                - title
+                - message
       responses:
         "200":
           description: 成功

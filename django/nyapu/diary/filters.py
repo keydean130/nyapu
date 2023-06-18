@@ -1,22 +1,24 @@
-from django_filters import rest_framework as filters
-from diary.models import Diary, Like
 import numpy as np
+from diary.models import Diary, Like
+from django_filters import rest_framework as filters
+
+from django.db.models import Q
 
 
 class DiariesFilter(filters.FilterSet):
     """日記を文字列検索するクラス"""
 
-    query = filters.CharFilter(method='user_search')
+    query = filters.CharFilter(method='diary_search')
 
     class Meta:
         model = Diary
         fields = ['query']
 
-    def user_search(self, queryset, name, value):
+    def diary_search(self, queryset, name, value):
         """日記検索用メソッド"""
         return queryset.filter(
-            filters.Q(title__icontains=value) |
-            filters.Q(content__icontains=value)
+            Q(title__icontains=value) |
+            Q(content__icontains=value)
         )
 
 
@@ -47,7 +49,7 @@ class LikedDiariesFilter(filters.FilterSet):
             # Like済みの日記のオブジェクトをlike_diary_listに格納
             queryset = queryset.filter(id__in=liked_diary_id_list)
         else :
-            queryset = None
+            queryset = Diary.objects.none()
         return queryset
 
 
@@ -65,16 +67,16 @@ class RecentDiariesFilter(filters.FilterSet):
         latest_diary = queryset.filter(user__id=value).order_by('-updated_at').first()
         # 投稿した日記がなければ
         if not latest_diary:
-            return None
+            return Diary.objects.none()
         # ユーザが直近で更新した日記の猫の品種を取得
-        cat_breed = recent_diary.photo1_most_similar_breed
+        cat_breed = latest_diary.photo1_most_similar_breed
         # ユーザが直近で更新した日記の猫の品種と同じ、他のユーザが直近で更新した日記があれば
         if queryset.filter(photo1_most_similar_breed=cat_breed).exclude(user__id=value):
             # ユーザが直近で更新した日記の猫の品種と同じ、他のユーザが直近で更新した日記を取得
             queryset = queryset.filter(photo1_most_similar_breed=cat_breed).exclude(
-                user__id=value).order_by('-updated_at').first()
+                user__id=value).order_by('-updated_at')
         else:
-            queryset = None
+            queryset = Diary.objects.none()
         return queryset
 
 
@@ -92,18 +94,18 @@ class NearestDiariesFilter(filters.FilterSet):
         latest_diary = queryset.filter(user__id=value).order_by('-updated_at').first()
         # 投稿した日記がなければ
         if not latest_diary:
-            return None
+            return Diary.objects.none()
         # 他のユーザが直近で更新した日記、最大100件を取得
         other_user_recent_updated_diaries = queryset.exclude(
             user__id=value).order_by('-updated_at')[0:99]
         # 他のユーザが直近で更新した日記がなければ
         if not other_user_recent_updated_diaries:
-            return None
+            return Diary.objects.none()
         # ユーザが直近で更新した日記の、最寄りの日記を取得
-        nearest_diary = self.nearest_diary(recent_diary, other_user_recent_updated_diaries)
+        nearest_diary = self.nearest_diary(latest_diary, other_user_recent_updated_diaries)
         # ユーザが直近で更新した日記の、最寄りの日記がなければ
         if not nearest_diary:
-            return None
+            return Diary.objects.none()
         queryset = queryset.filter(id=nearest_diary.id)
         return queryset
 

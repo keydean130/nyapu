@@ -3,7 +3,7 @@ import logging
 from accounts.filters import (CustomUsersFilter, FollowersFilter,
                               FollowingsFilter)
 from accounts.models import CustomUser, Relationship
-from accounts.serializers import (CustomUserSerializer, InquerySerializer,
+from accounts.serializers import (CustomUserSerializer, InquirySerializer,
                                   RelationshipSerializer)
 from django_filters import rest_framework as filters
 from rest_framework import generics, status, viewsets
@@ -52,13 +52,14 @@ class RelationshipViewSet(viewsets.ModelViewSet):
 
 class InquiryCreateAPIView(generics.CreateAPIView):
     """お問い合わせページ用のViewクラス"""
-    serializer_class = InquerySerializer
+    serializer_class = InquirySerializer
 
     def create(self, request, *args, **kwargs):
+        """お問い合わせフォームの作成"""
+        # シリアライザからリクエストデータを取得
         serializer = self.get_serializer(data=request.data)
+        # リクエストデータの検証
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response({'message': 'メッセージを送信しました。'}, status=status.HTTP_201_CREATED)
-
-    def perform_create(self, serializer):
+        # お問い合わせのメール送信
         serializer.send_email()
+        return Response({'message': 'メッセージを送信しました。'}, status=status.HTTP_201_CREATED)    

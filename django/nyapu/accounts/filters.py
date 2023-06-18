@@ -1,5 +1,7 @@
-from django_filters import rest_framework as filters
 from accounts.models import CustomUser, Relationship
+from django_filters import rest_framework as filters
+
+from django.db.models import Q
 
 
 class CustomUsersFilter(filters.FilterSet):
@@ -13,8 +15,8 @@ class CustomUsersFilter(filters.FilterSet):
     def user_search(self, queryset, name, value):
         """カスタムユーザー検索用メソッド"""
         return queryset.filter(
-            filters.Q(username__icontains=value) |
-            filters.Q(profile__icontains=value)
+            Q(username__icontains=value) |
+            Q(profile__icontains=value)
         )
 
 

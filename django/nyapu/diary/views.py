@@ -35,7 +35,7 @@ class DiaryViewSet(viewsets.ModelViewSet):
         if 'query' in self.request.GET:
             filterset_classes.append(DiariesFilter)
         # プロフィール（自分が投稿した日記）の場合
-        if 'profile' in self.request.GET:
+        elif 'profile' in self.request.GET:
             filterset_classes.append(MyDiariesFilter)
         # いいねした日記一覧の場合
         elif 'liked_diaries' in self.request.GET: # Todo URLパラメータにアンスコ使うの良くないらしい
